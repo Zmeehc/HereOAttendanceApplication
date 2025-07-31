@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1034370621749",
+    "project_id": "hereo-attendance",
+    "storage_bucket": "hereo-attendance.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1034370621749:android:b1554bde7b25993d456c7c",
+        "android_client_info": {
+          "package_name": "com.llavore.hereoattendance"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB1TeFopGEiaXvIJnWE8o97Hqv09Kan-Zs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,11 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:background="@color/green"
+    android:padding="16dp"
+    android:layout_marginBottom="16dp">
+
+    <!-- Your image, name, and email can go here later -->
+
+</LinearLayout>

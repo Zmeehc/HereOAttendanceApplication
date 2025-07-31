@@ -1,0 +1,14 @@
+<resources>
+    <!-- Existing styles ... -->
+    <style name="NavDrawerItemText" parent="TextAppearance.AppCompat.Body1">
+        <item name="android:textSize">28sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/poppins_semibold</item>
+        <item name="android:paddingStart">24dp</item>
+    </style>
+    <style name="NavDrawerItemIcon">
+        <item name="android:layout_width">36dp</item>
+        <item name="android:layout_height">36dp</item>
+        <item name="android:layout_marginStart">16dp</item>
+    </style>
+</resources>
