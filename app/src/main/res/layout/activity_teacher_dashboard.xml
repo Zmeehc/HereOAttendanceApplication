@@ -81,7 +81,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="15dp"
                     android:textSize="18sp"
-                    android:text="Welcome! Balong Llavore"
+                    android:text="Welcome! "
+                    android:textColor="@color/green"
                     android:fontFamily="@font/poppins_semibold"
                     tools:layout_editor_absoluteX="122dp"
                     tools:layout_editor_absoluteY="87dp" />
@@ -93,7 +94,7 @@
                     android:layout_marginStart="15dp"
                     android:textSize="13sp"
                     android:fontFamily="@font/poppins_light_italic"
-                    android:text="longbaerovall@sccpag.edu.ph"
+                    android:text=""
                     tools:layout_editor_absoluteX="122dp"
                     tools:layout_editor_absoluteY="87dp"
                     />

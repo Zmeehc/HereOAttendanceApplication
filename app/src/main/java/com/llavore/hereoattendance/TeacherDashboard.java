@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
@@ -16,10 +18,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.core.content.ContextCompat;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.llavore.hereoattendance.model.User;
+import com.llavore.hereoattendance.utils.SessionManager;
+import com.bumptech.glide.Glide;
 
 public class TeacherDashboard extends AppCompatActivity {
 
     private ImageView burgerIcon;
+    private SessionManager sessionManager;
+    private DatabaseReference mDatabase;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +43,9 @@ public class TeacherDashboard extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        sessionManager = new SessionManager(this);
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
         DrawerLayout drawerLayout = findViewById(R.id.main);
         burgerIcon = findViewById(R.id.burgerIcon);
@@ -44,8 +59,8 @@ public class TeacherDashboard extends AppCompatActivity {
                     .setTitle("Logout")
                     .setMessage("Are you sure you want to logout?")
                     .setPositiveButton("Yes", (dialog, which) -> {
-                        FirebaseAuth.getInstance().signOut();
-                        Intent intent = new Intent(TeacherDashboard.this, TeacherLoginActivity.class);
+                        sessionManager.logout();
+                        Intent intent = new Intent(TeacherDashboard.this, MainActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         startActivity(intent);
                         finish();
@@ -61,11 +76,109 @@ public class TeacherDashboard extends AppCompatActivity {
                 startActivity(intent);
                 drawerLayout.closeDrawers();
                 return true;
+            } else if (item.getItemId() == R.id.nav_account) {
+                // Navigate to account page
+                Intent intent = new Intent(TeacherDashboard.this, TeacherProfileActivity.class);
+                startActivity(intent);
+                drawerLayout.closeDrawers();
+                return true;
+            } else if (item.getItemId() == R.id.nav_notifications) {
+                // Handle notifications navigation
+                // You can add navigation to notifications activity here
+                drawerLayout.closeDrawers();
+                return true;
+            } else if (item.getItemId() == R.id.nav_settings) {
+                // Handle settings navigation
+                // You can add navigation to settings activity here
+                drawerLayout.closeDrawers();
+                return true;
             }
             // Handle other navigation items if needed
             return false;
         });
 
+                       // Load user profile picture and data
+               loadUserProfilePicture();
+               loadUserData();
+
         // getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green));
     }
+    
+               private void loadUserProfilePicture() {
+               String userId = sessionManager.getUserId();
+               if (userId == null) return;
+
+               mDatabase.child("users").child("teachers").child(userId)
+                       .addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                               if (dataSnapshot.exists()) {
+                                   User user = dataSnapshot.getValue(User.class);
+                                   if (user != null) {
+                                       ImageView profilePicture = findViewById(R.id.imageView3);
+                                       if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
+                                           Glide.with(TeacherDashboard.this)
+                                                   .load(user.getProfileImageUrl())
+                                                   .placeholder(R.drawable.profilepic)
+                                                   .error(R.drawable.profilepic)
+                                                   .circleCrop()
+                                                   .override(200, 200)
+                                                   .into(profilePicture);
+                                       } else {
+                                           profilePicture.setImageResource(R.drawable.profilepic);
+                                       }
+                                   }
+                               }
+                           }
+
+                           @Override
+                           public void onCancelled(@NonNull DatabaseError databaseError) {
+                               // Handle error silently
+                           }
+                       });
+           }
+
+           private void loadUserData() {
+               String userId = sessionManager.getUserId();
+               if (userId == null) return;
+
+               mDatabase.child("users").child("teachers").child(userId)
+                       .addListenerForSingleValueEvent(new ValueEventListener() {
+                           @Override
+                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                               if (dataSnapshot.exists()) {
+                                   User user = dataSnapshot.getValue(User.class);
+                                   if (user != null) {
+                                       displayUserData(user);
+                                   }
+                               }
+                           }
+
+                           @Override
+                           public void onCancelled(@NonNull DatabaseError databaseError) {
+                               // Handle error silently
+                           }
+                       });
+           }
+
+           private void displayUserData(User user) {
+               TextView welcomeName = findViewById(R.id.welcomeName);
+               TextView welcomeEmail = findViewById(R.id.welcomeEmail);
+
+               // Display full name in green color
+               String fullName = user.getFullName();
+               if (fullName != null && !fullName.isEmpty()) {
+                   welcomeName.setText("Welcome! " + fullName);
+               } else {
+                   welcomeName.setText("Welcome! User");
+               }
+
+               // Display email
+               String email = user.getEmail();
+               if (email != null && !email.isEmpty()) {
+                   welcomeEmail.setText(email);
+               } else {
+                   welcomeEmail.setText("No email available");
+               }
+           }
 }

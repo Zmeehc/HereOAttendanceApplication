@@ -14,6 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.llavore.hereoattendance.utils.SessionManager;
 
 
 
@@ -24,6 +25,7 @@ public class TeacherLoginActivity extends AppCompatActivity {
 
     private MaterialButton btnLogin;
     private FirebaseAuth mAuth;
+    private SessionManager sessionManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,7 @@ public class TeacherLoginActivity extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
+        sessionManager = new SessionManager(this);
 
         switchRoles = findViewById(R.id.roleSwitch);
         signUp = findViewById(R.id.txtSignUp);
@@ -65,6 +68,10 @@ public class TeacherLoginActivity extends AppCompatActivity {
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
+                            // Save session data
+                            String userId = mAuth.getCurrentUser().getUid();
+                            sessionManager.setLogin(true, userId, "teacher");
+                            
                             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
                             startActivity(new Intent(this, TeacherDashboard.class));
                             finish();
