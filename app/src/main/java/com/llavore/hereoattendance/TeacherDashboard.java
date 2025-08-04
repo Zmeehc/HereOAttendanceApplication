@@ -56,17 +56,17 @@ public class TeacherDashboard extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(item -> {
             if (item.getItemId() == R.id.nav_logout) {
                 new AlertDialog.Builder(this)
-                    .setTitle("Logout")
-                    .setMessage("Are you sure you want to logout?")
-                    .setPositiveButton("Yes", (dialog, which) -> {
-                        sessionManager.logout();
-                        Intent intent = new Intent(TeacherDashboard.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        startActivity(intent);
-                        finish();
-                    })
-                    .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                    .show();
+                        .setTitle("Logout")
+                        .setMessage("Are you sure you want to logout?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            sessionManager.logout();
+                            Intent intent = new Intent(TeacherDashboard.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
+                            finish();
+                        })
+                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                        .show();
                 drawerLayout.closeDrawers();
                 return true;
             } else if (item.getItemId() == R.id.nav_dashboard) {
@@ -97,88 +97,110 @@ public class TeacherDashboard extends AppCompatActivity {
             return false;
         });
 
-                       // Load user profile picture and data
-               loadUserProfilePicture();
-               loadUserData();
+        // Load user profile picture and data
+        loadUserProfilePicture();
+        loadUserData();
 
         // getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green));
     }
-    
-               private void loadUserProfilePicture() {
-               String userId = sessionManager.getUserId();
-               if (userId == null) return;
 
-               mDatabase.child("users").child("teachers").child(userId)
-                       .addListenerForSingleValueEvent(new ValueEventListener() {
-                           @Override
-                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                               if (dataSnapshot.exists()) {
-                                   User user = dataSnapshot.getValue(User.class);
-                                   if (user != null) {
-                                       ImageView profilePicture = findViewById(R.id.imageView3);
-                                       if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
-                                           Glide.with(TeacherDashboard.this)
-                                                   .load(user.getProfileImageUrl())
-                                                   .placeholder(R.drawable.profilepic)
-                                                   .error(R.drawable.profilepic)
-                                                   .circleCrop()
-                                                   .override(200, 200)
-                                                   .into(profilePicture);
-                                       } else {
-                                           profilePicture.setImageResource(R.drawable.profilepic);
-                                       }
-                                   }
-                               }
-                           }
+    private void loadUserProfilePicture() {
+        String userId = sessionManager.getUserId();
+        if (userId == null) return;
 
-                           @Override
-                           public void onCancelled(@NonNull DatabaseError databaseError) {
-                               // Handle error silently
-                           }
-                       });
-           }
+        mDatabase.child("users").child("teachers").child(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            User user = dataSnapshot.getValue(User.class);
+                            if (user != null) {
+                                ImageView profilePicture = findViewById(R.id.imageView3);
+                                if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
+                                    Glide.with(TeacherDashboard.this)
+                                            .load(user.getProfileImageUrl())
+                                            .placeholder(R.drawable.baseline_person_24)
+                                            .error(R.drawable.baseline_person_24)
+                                            .circleCrop()
+                                            .override(200, 200)
+                                            .into(profilePicture);
+                                } else {
+                                    profilePicture.setImageResource(R.drawable.baseline_person_24);
+                                }
+                            }
+                        }
+                    }
 
-           private void loadUserData() {
-               String userId = sessionManager.getUserId();
-               if (userId == null) return;
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle error silently
+                    }
+                });
+    }
 
-               mDatabase.child("users").child("teachers").child(userId)
-                       .addListenerForSingleValueEvent(new ValueEventListener() {
-                           @Override
-                           public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                               if (dataSnapshot.exists()) {
-                                   User user = dataSnapshot.getValue(User.class);
-                                   if (user != null) {
-                                       displayUserData(user);
-                                   }
-                               }
-                           }
+    private void loadUserData() {
+        String userId = sessionManager.getUserId();
+        if (userId == null) return;
 
-                           @Override
-                           public void onCancelled(@NonNull DatabaseError databaseError) {
-                               // Handle error silently
-                           }
-                       });
-           }
+        mDatabase.child("users").child("teachers").child(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (dataSnapshot.exists()) {
+                            User user = dataSnapshot.getValue(User.class);
+                            if (user != null) {
+                                displayUserData(user);
+                            }
+                        }
+                    }
 
-           private void displayUserData(User user) {
-               TextView welcomeName = findViewById(R.id.welcomeName);
-               TextView welcomeEmail = findViewById(R.id.welcomeEmail);
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        // Handle error silently
+                    }
+                });
+    }
 
-               // Display full name in green color
-               String fullName = user.getFullName();
-               if (fullName != null && !fullName.isEmpty()) {
-                   welcomeName.setText("Welcome! " + fullName);
-               } else {
-                   welcomeName.setText("Welcome! User");
-               }
+    private void displayUserData(User user) {
+        TextView welcomeName = findViewById(R.id.welcomeName);
+        TextView welcomeEmail = findViewById(R.id.welcomeEmail);
 
-               // Display email
-               String email = user.getEmail();
-               if (email != null && !email.isEmpty()) {
-                   welcomeEmail.setText(email);
-               } else {
-                   welcomeEmail.setText("No email available");
-               }
-           }
+        // Display "Welcome!" in black and first & last name in green
+        String firstLastName = getFirstLastName(user);
+        if (firstLastName != null && !firstLastName.isEmpty()) {
+            // Create spannable string to have different colors
+            android.text.SpannableString spannableString = new android.text.SpannableString("Welcome! " + firstLastName);
+            // Set black color for "Welcome! "
+            spannableString.setSpan(new android.text.style.ForegroundColorSpan(android.graphics.Color.BLACK),
+                    0, 9, android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            // Set green color for the name
+            spannableString.setSpan(new android.text.style.ForegroundColorSpan(
+                            androidx.core.content.ContextCompat.getColor(this, R.color.green)),
+                    9, spannableString.length(), android.text.Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            welcomeName.setText(spannableString);
+        } else {
+            welcomeName.setText("Welcome! User");
+        }
+
+        // Display email
+        String email = user.getEmail();
+        if (email != null && !email.isEmpty()) {
+            welcomeEmail.setText(email);
+        } else {
+            welcomeEmail.setText("No email available");
+        }
+    }
+
+    // Helper method to get only first and last name using User model getters
+    private String getFirstLastName(User user) {
+        StringBuilder name = new StringBuilder();
+        if (user.getFirstName() != null && !user.getFirstName().isEmpty()) {
+            name.append(user.getFirstName());
+        }
+        if (user.getLastName() != null && !user.getLastName().isEmpty()) {
+            if (name.length() > 0) name.append(" ");
+            name.append(user.getLastName());
+        }
+        return name.toString();
+    }
 }
