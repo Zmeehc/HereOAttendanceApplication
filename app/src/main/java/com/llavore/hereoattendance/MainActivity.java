@@ -17,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private CardView teacherButton;
     private SessionManager sessionManager;
 
+    private TextView;
+
     @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
