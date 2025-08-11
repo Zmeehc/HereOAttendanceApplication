@@ -73,7 +73,7 @@ public class TeacherLoginActivity extends AppCompatActivity {
                             sessionManager.setLogin(true, userId, "teacher");
                             
                             Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(this, TeacherDashboard.class));
+                            startActivity(new Intent(this, DashboardLessonActivity.class));
                             finish();
                         } else {
                             Toast.makeText(this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();

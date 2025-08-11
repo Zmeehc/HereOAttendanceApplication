@@ -55,7 +55,7 @@ public class TeacherSignUpActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     // Gender dropdown options
-    private String[] genderOptions = {"alMe", "Female", "Prefer not to say"};
+    private String[] genderOptions = {"Male", "Female", "Prefer not to say"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

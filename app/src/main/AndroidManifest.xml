@@ -26,11 +26,7 @@
         <activity
             android:name=".DashboardLessonActivity"
             android:exported="false" />
-        <activity
-            android:name=".Dashboard"
-            android:exported="false"
-            android:label="@string/title_activity_dashboard"
-            android:theme="@style/Theme.HereOAttendance.NoActionBar" />
+
         <activity
             android:name=".TeacherDashboard"
             android:exported="false" />

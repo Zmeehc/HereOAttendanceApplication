@@ -98,11 +98,15 @@ public class TeacherDashboard extends AppCompatActivity {
         });
 
         // Load user profile picture and data
+
         loadUserProfilePicture();
         loadUserData();
 
+
         // getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green));
     }
+
+
 
     private void loadUserProfilePicture() {
         String userId = sessionManager.getUserId();
