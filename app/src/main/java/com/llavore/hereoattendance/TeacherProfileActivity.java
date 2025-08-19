@@ -4,8 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -33,7 +35,7 @@ public class TeacherProfileActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     
     // UI elements for user data
-    private TextView emailValue, fullNameValue, genderValue, birthdateValue, contactValue, passwordValue;
+    private TextView emailValue, fullNameValue, genderValue, birthdateValue, idNumberValue, contactValue, passwordValue;
     
     @SuppressLint("MissingInflatedId")
     @Override
@@ -107,6 +109,9 @@ public class TeacherProfileActivity extends AppCompatActivity {
             // Handle other navigation items if needed
             return false;
         });
+        
+        // Ensure the profile picture click is not interfered with by the drawer
+        // drawerLayout.setDrawerLockMode(androidx.drawerlayout.widget.DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         // getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green));
     }
@@ -116,16 +121,39 @@ public class TeacherProfileActivity extends AppCompatActivity {
         fullNameValue = findViewById(R.id.fullNameValue);
         genderValue = findViewById(R.id.genderValue);
         birthdateValue = findViewById(R.id.birthdateValue);
+        idNumberValue = findViewById(R.id.idNumberValue);
         contactValue = findViewById(R.id.contactValue);
         passwordValue = findViewById(R.id.passwordValue);
     }
     
     private void setupProfilePictureClick() {
         ImageView profilePicture = findViewById(R.id.profilePicture);
-        profilePicture.setOnClickListener(v -> {
-            Intent intent = new Intent(TeacherProfileActivity.this, TeacherEditProfileActivity.class);
-            startActivityForResult(intent, 1001); // Request code for edit profile
-        });
+        androidx.cardview.widget.CardView profileCard = findViewById(R.id.profilePictureCard);
+        
+        // Make both the image and card clickable
+        View.OnClickListener clickListener = v -> {
+            Toast.makeText(this, "Opening edit profile...", Toast.LENGTH_SHORT).show();
+            
+            try {
+                Intent intent = new Intent(TeacherProfileActivity.this, TeacherEditProfileActivity.class);
+                startActivity(intent);
+            } catch (Exception e) {
+                Toast.makeText(this, "Error opening edit profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
+        
+        profilePicture.setOnClickListener(clickListener);
+        if (profileCard != null) {
+            profileCard.setOnClickListener(clickListener);
+        }
+        
+        // Ensure both are clickable
+        profilePicture.setClickable(true);
+        profilePicture.setFocusable(true);
+        if (profileCard != null) {
+            profileCard.setClickable(true);
+            profileCard.setFocusable(true);
+        }
     }
     
     private void loadUserData() {
@@ -160,7 +188,36 @@ public class TeacherProfileActivity extends AppCompatActivity {
         fullNameValue.setText(user.getFullName() != null ? user.getFullName() : "Not provided");
         genderValue.setText(user.getGender() != null ? user.getGender() : "Not provided");
         birthdateValue.setText(user.getBirthdate() != null ? user.getBirthdate() : "Not provided");
-        contactValue.setText(user.getIdNumber() != null ? user.getIdNumber() : "Not provided");
+        idNumberValue.setText(user.getIdNumber() != null ? user.getIdNumber() : "Not provided");
+        // Format contact number for display
+        String contactNumber = user.getContactNumber();
+        if (contactNumber != null && !contactNumber.isEmpty()) {
+            // If it already has +63, format it nicely, otherwise add it
+            if (contactNumber.startsWith("+63")) {
+                String number = contactNumber.substring(3);
+                if (number.length() >= 9) {
+                    // Format as +63 966 399 6287
+                    contactValue.setText(String.format("+63 %s %s %s", 
+                        number.substring(0, 3), 
+                        number.substring(3, 6), 
+                        number.substring(6)));
+                } else {
+                    contactValue.setText(contactNumber);
+                }
+            } else {
+                // If no +63 prefix, add it and format
+                if (contactNumber.length() >= 9) {
+                    contactValue.setText(String.format("+63 %s %s %s", 
+                        contactNumber.substring(0, 3), 
+                        contactNumber.substring(3, 6), 
+                        contactNumber.substring(6)));
+                } else {
+                    contactValue.setText("+63 " + contactNumber);
+                }
+            }
+        } else {
+            contactValue.setText("Not provided");
+        }
         passwordValue.setText("******78"); // Always show masked password
         
         // Load profile image if available
@@ -183,12 +240,9 @@ public class TeacherProfileActivity extends AppCompatActivity {
     }
     
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        
-        if (requestCode == 1001 && resultCode == RESULT_OK) {
-            // Profile was updated, refresh the data
-            loadUserData();
-        }
+    protected void onResume() {
+        super.onResume();
+        // Refresh user data when returning to profile
+        loadUserData();
     }
 }

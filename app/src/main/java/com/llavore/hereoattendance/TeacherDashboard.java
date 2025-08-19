@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
@@ -32,6 +33,8 @@ public class TeacherDashboard extends AppCompatActivity {
     private ImageView burgerIcon;
     private SessionManager sessionManager;
     private DatabaseReference mDatabase;
+
+    private CardView coursesBtn;
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +45,13 @@ public class TeacherDashboard extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        coursesBtn = findViewById(R.id.courseCardView);
+        coursesBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherDashboard.this, ActiveCoursesActivity.class);
+            startActivity(intent);
+            finish();
         });
 
         sessionManager = new SessionManager(this);
@@ -98,9 +108,16 @@ public class TeacherDashboard extends AppCompatActivity {
         });
 
         // Load user profile picture and data
-
         loadUserProfilePicture();
         loadUserData();
+        loadCourseCount();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh profile picture when returning to dashboard
+        loadUserProfilePicture();
 
 
         // getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green));
@@ -206,5 +223,27 @@ public class TeacherDashboard extends AppCompatActivity {
             name.append(user.getLastName());
         }
         return name.toString();
+    }
+
+    private void loadCourseCount() {
+        String userId = sessionManager.getUserId();
+        if (userId == null) return;
+
+        DatabaseReference coursesRef = mDatabase.child("users").child("teachers").child(userId).child("courses");
+        coursesRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int courseCount = (int) dataSnapshot.getChildrenCount();
+                TextView courseCountText = findViewById(R.id.courseCountText);
+                if (courseCountText != null) {
+                    courseCountText.setText(String.valueOf(courseCount));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                // Handle error silently
+            }
+        });
     }
 }

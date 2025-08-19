@@ -53,7 +53,7 @@ import java.util.Locale;
 public class TeacherEditProfileActivity extends AppCompatActivity {
 
     private ImageView backArrow, profilePicture;
-    private TextInputEditText firstNameEdit, middleNameEdit, lastNameEdit, emailEdit, contactEdit;
+    private TextInputEditText firstNameEdit, middleNameEdit, lastNameEdit, emailEdit, idNumberEdit, contactEdit;
     private TextInputEditText passwordEdit, confirmPasswordEdit;
     private AutoCompleteTextView genderEdit;
     private TextInputLayout birthdateLayout;
@@ -87,6 +87,10 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
                     if (selectedImageBitmap != null) {
                         selectedImageBitmap = cropToSquare(selectedImageBitmap);
                         profilePicture.setImageBitmap(selectedImageBitmap);
+                        // Clear any existing profile picture URL since we have a new image
+                        if (currentUser != null) {
+                            currentUser.setProfileImageUrl(null);
+                        }
                     }
                 }
             });
@@ -99,6 +103,10 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
                         selectedImageBitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
                         selectedImageBitmap = cropToSquare(selectedImageBitmap);
                         profilePicture.setImageBitmap(selectedImageBitmap);
+                        // Clear any existing profile picture URL since we have a new image
+                        if (currentUser != null) {
+                            currentUser.setProfileImageUrl(null);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                         Toast.makeText(this, "Error loading image", Toast.LENGTH_SHORT).show();
@@ -110,20 +118,32 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
+        try {
+            EdgeToEdge.enable(this);
+        } catch (Exception e) {
+            // Ignore EdgeToEdge errors
+        }
         setContentView(R.layout.activity_teacher_edit_profile);
         
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+        try {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+                v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
+                return insets;
+            });
+        } catch (Exception e) {
+            // Ignore ViewCompat errors
+        }
 
         // Initialize Firebase
-        sessionManager = new SessionManager(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mStorage = FirebaseStorage.getInstance().getReference();
-        mAuth = FirebaseAuth.getInstance();
+        try {
+            sessionManager = new SessionManager(this);
+            mDatabase = FirebaseDatabase.getInstance().getReference();
+            mStorage = FirebaseStorage.getInstance().getReference();
+            mAuth = FirebaseAuth.getInstance();
+        } catch (Exception e) {
+            Toast.makeText(this, "Error initializing Firebase: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
         
         // Initialize views
         initializeViews();
@@ -145,10 +165,14 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
         genderEdit = findViewById(R.id.genderEdit);
         birthdateLayout = findViewById(R.id.birthdateLayout);
         birthdateEdit = findViewById(R.id.birthdateEdit);
+        idNumberEdit = findViewById(R.id.idNumberEdit);
         contactEdit = findViewById(R.id.contactEdit);
         passwordEdit = findViewById(R.id.passwordEdit);
         confirmPasswordEdit = findViewById(R.id.confirmPasswordEdit);
         saveButton = findViewById(R.id.saveButton);
+        
+        // Setup contact number formatting
+        setupContactNumberFormatting();
     }
     
     private void setupClickListeners() {
@@ -176,6 +200,36 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, 
                 android.R.layout.simple_dropdown_item_1line, genderOptions);
         genderEdit.setAdapter(adapter);
+        
+        // Set a default value if none is selected
+        if (genderEdit.getText().toString().trim().isEmpty()) {
+            genderEdit.setText(genderOptions[0], false);
+        }
+        
+        // Ensure the dropdown opens when clicked
+        genderEdit.setOnClickListener(v -> genderEdit.showDropDown());
+    }
+    
+    private void setupContactNumberFormatting() {
+        contactEdit.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            
+            @Override
+            public void afterTextChanged(android.text.Editable s) {
+                String text = s.toString();
+                if (!text.startsWith("+63 ")) {
+                    // If user deletes the prefix, restore it
+                    if (!text.startsWith("+63")) {
+                        contactEdit.setText("+63 ");
+                        contactEdit.setSelection(4); // Move cursor after "+63 "
+                    }
+                }
+            }
+        });
     }
     
     private void setupDatePicker() {
@@ -222,7 +276,13 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
     }
     
     private void showImageSourceDialog() {
-        String[] options = {"Take Photo", "Choose from Gallery"};
+        String[] options;
+        if (currentUser != null && currentUser.getProfileImageUrl() != null && !currentUser.getProfileImageUrl().isEmpty()) {
+            options = new String[]{"Take Photo", "Choose from Gallery", "Remove Current Photo"};
+        } else {
+            options = new String[]{"Take Photo", "Choose from Gallery"};
+        }
+        
         new AlertDialog.Builder(this)
                 .setTitle("Select Image Source")
                 .setItems(options, (dialog, which) -> {
@@ -230,12 +290,24 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
                         // Camera
                         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                         cameraLauncher.launch(cameraIntent);
-                    } else {
+                    } else if (which == 1) {
                         // Gallery
                         galleryLauncher.launch("image/*");
+                    } else if (which == 2 && options.length == 3) {
+                        // Remove Current Photo
+                        removeCurrentProfilePicture();
                     }
                 })
                 .show();
+    }
+    
+    private void removeCurrentProfilePicture() {
+        selectedImageBitmap = null;
+        if (currentUser != null) {
+            currentUser.setProfileImageUrl(null);
+        }
+        profilePicture.setImageResource(R.drawable.baseline_person_24);
+        Toast.makeText(this, "Profile picture removed", Toast.LENGTH_SHORT).show();
     }
     
     private void loadCurrentUserData() {
@@ -267,9 +339,34 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
         middleNameEdit.setText(user.getMiddleName());
         lastNameEdit.setText(user.getLastName());
         emailEdit.setText(user.getEmail());
-        genderEdit.setText(user.getGender());
+        
+        // Handle gender field properly
+        if (user.getGender() != null && !user.getGender().isEmpty()) {
+            genderEdit.setText(user.getGender(), false);
+        } else {
+            genderEdit.setText(genderOptions[0], false);
+        }
+        
         birthdateEdit.setText(user.getBirthdate());
-        contactEdit.setText(user.getIdNumber());
+        idNumberEdit.setText(user.getIdNumber());
+        
+        // Format contact number for display (remove +63 prefix if exists)
+        String contactNumber = user.getContactNumber();
+        if (contactNumber != null && !contactNumber.isEmpty()) {
+            if (contactNumber.startsWith("+63")) {
+                String number = contactNumber.substring(3);
+                if (number.length() >= 9) {
+                    contactEdit.setText("+63 " + number.substring(0, 3) + " " + number.substring(3, 6) + " " + number.substring(6));
+                } else {
+                    contactEdit.setText("+63 " + number);
+                }
+            } else {
+                contactEdit.setText("+63 " + contactNumber);
+            }
+        } else {
+            contactEdit.setText("+63 ");
+        }
+        
         // Don't populate password fields for security
         
         // Load existing profile picture if available
@@ -287,6 +384,16 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
                     .into(profilePicture);
         } else {
             profilePicture.setImageResource(R.drawable.baseline_person_24);
+        }
+    }
+    
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Refresh profile picture when returning to edit profile
+        // Only load existing picture if no new image is selected
+        if (currentUser != null && selectedImageBitmap == null) {
+            loadExistingProfilePicture(currentUser.getProfileImageUrl());
         }
     }
     
@@ -318,8 +425,20 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
             isValid = false;
         }
         
-        if (contactEdit.getText().toString().trim().isEmpty()) {
+        if (idNumberEdit.getText().toString().trim().isEmpty()) {
+            idNumberEdit.setError("ID number is required");
+            isValid = false;
+        }
+        
+        String contactText = contactEdit.getText().toString().trim();
+        if (contactText.isEmpty() || contactText.equals("+63 ")) {
             contactEdit.setError("Contact number is required");
+            isValid = false;
+        } else if (!contactText.startsWith("+63 ")) {
+            contactEdit.setError("Contact number must start with +63");
+            isValid = false;
+        } else if (contactText.length() < 7) { // +63 + at least 1 digit
+            contactEdit.setError("Please enter a valid contact number");
             isValid = false;
         }
         
@@ -349,16 +468,22 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
         
         // Update user data
         User updatedUser = new User();
-        updatedUser.setIdNumber(contactEdit.getText().toString().trim());
+        updatedUser.setIdNumber(idNumberEdit.getText().toString().trim());
         updatedUser.setFirstName(firstNameEdit.getText().toString().trim());
         updatedUser.setMiddleName(middleNameEdit.getText().toString().trim());
         updatedUser.setLastName(lastNameEdit.getText().toString().trim());
         updatedUser.setEmail(emailEdit.getText().toString().trim());
         updatedUser.setGender(genderEdit.getText().toString().trim());
         updatedUser.setBirthdate(birthdateEdit.getText().toString().trim());
+        updatedUser.setContactNumber(contactEdit.getText().toString().trim());
         updatedUser.setProgram(currentUser != null ? currentUser.getProgram() : "");
         updatedUser.setUserType("teacher");
         updatedUser.setCreatedAt(currentUser != null ? currentUser.getCreatedAt() : System.currentTimeMillis());
+        
+        // Preserve existing profile picture URL if no new image is selected
+        if (currentUser != null && currentUser.getProfileImageUrl() != null && selectedImageBitmap == null) {
+            updatedUser.setProfileImageUrl(currentUser.getProfileImageUrl());
+        }
         
         // Save to database
         mDatabase.child("users").child("teachers").child(userId).setValue(updatedUser)

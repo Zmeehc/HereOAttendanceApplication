@@ -19,23 +19,19 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/toolbar"
             android:layout_width="0dp"
-            android:layout_height="80dp"
+            android:layout_height="60dp"
             android:padding="16dp"
             android:background="@color/green"
-            android:elevation="4dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
             <ImageView
                 android:id="@+id/burgerIcon"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="34dp"
+                android:layout_height="34dp"
                 android:src="@drawable/menu_icon"
                 android:contentDescription="Menu"
-                android:tint="@color/white"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:padding="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -48,8 +44,7 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:text="Account"
                 android:textColor="@color/white"
-                android:textSize="22sp"
-                android:textStyle="bold"
+                android:textSize="20sp"
                 app:layout_constraintStart_toEndOf="@id/burgerIcon"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent" />
@@ -215,6 +210,38 @@
                         android:textColor="@color/green"
                         android:textSize="16sp"
                         android:fontFamily="@font/poppins_semibold"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/light_gray" />
+
+                <!-- ID Number Section -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="ID Number"
+                        android:textColor="@color/darker_gray"
+                        android:textSize="14sp"
+                        android:fontFamily="@font/poppins_medium" />
+
+                    <TextView
+                        android:id="@+id/idNumberValue"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2021-0001"
+                        android:textColor="@color/green"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins_medium"
                         android:layout_marginTop="4dp" />
 
                 </LinearLayout>

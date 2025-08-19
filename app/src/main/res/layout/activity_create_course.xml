@@ -8,9 +8,8 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    tools:context=".TeacherSignUpActivity">
+    tools:context=".CreateCourseActivity">
 
-    <!-- Toolbar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -22,7 +21,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:id="@+id/backArrow"
+            android:id="@+id/backCourseArrow"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:src="@drawable/back_arrow"
@@ -31,20 +30,20 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
-            android:id="@+id/idSignup"
+            android:id="@+id/activeCourseTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/poppins_semibold"
-            android:text="Create an Account"
+            android:text="Create Course"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@id/backLoginArrow"
+            app:layout_constraintStart_toEndOf="@id/backCourseArrow"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Scrollable content with ConstraintLayout inside -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -66,7 +65,7 @@
 
             <!-- ID Number Field -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/idNumberField"
+                android:id="@+id/courseNameField"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginHorizontal="25dp"
@@ -83,12 +82,12 @@
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/txtIDNo"
+                    android:id="@+id/txtCourseName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:hint="Enter ID Number"
-                    android:inputType="number"
+                    android:hint="Course Name"
+                    android:inputType="text"
                     android:minHeight="48dp"
                     android:textCursorDrawable="@drawable/custom_cursor"
                     android:textSize="13sp" />
@@ -96,7 +95,7 @@
 
             <!-- First Name -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/firstNamefield"
+                android:id="@+id/scheduleField"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="12dp"
@@ -108,16 +107,16 @@
                 app:boxCornerRadiusBottomEnd="5dp"
                 app:boxStrokeColor="@color/green"
                 app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/idNumberField"
+                app:layout_constraintTop_toBottomOf="@id/courseNameField"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/firstNameSignup"
+                    android:id="@+id/scheduleTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:hint="First Name"
+                    android:hint="Schedule"
                     android:inputType="text"
                     android:minHeight="48dp"
                     android:textCursorDrawable="@drawable/custom_cursor"
@@ -126,7 +125,7 @@
 
             <!-- Middle Name -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/middleNamefield"
+                android:id="@+id/roomField"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="12dp"
@@ -138,16 +137,16 @@
                 app:boxCornerRadiusBottomEnd="5dp"
                 app:boxStrokeColor="@color/green"
                 app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/firstNamefield"
+                app:layout_constraintTop_toBottomOf="@id/scheduleField"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/middleNameSignUp"
+                    android:id="@+id/roomTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:hint="Middle Name"
+                    android:hint="Room"
                     android:inputType="text"
                     android:minHeight="48dp"
                     android:textCursorDrawable="@drawable/custom_cursor"
@@ -156,7 +155,7 @@
 
             <!-- Last Name -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/lastNamefield"
+                android:id="@+id/courseCodefield"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="12dp"
@@ -168,16 +167,16 @@
                 app:boxCornerRadiusBottomEnd="5dp"
                 app:boxStrokeColor="@color/green"
                 app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/middleNamefield"
+                app:layout_constraintTop_toBottomOf="@id/roomField"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/lastNameSignUp"
+                    android:id="@+id/courseCodeTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:hint="Last Name"
+                    android:hint="Course Code"
                     android:inputType="text"
                     android:minHeight="48dp"
                     android:textCursorDrawable="@drawable/custom_cursor"
@@ -186,7 +185,7 @@
 
             <!-- Email -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/emailField"
+                android:id="@+id/classStartField"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="12dp"
@@ -198,262 +197,100 @@
                 app:boxCornerRadiusBottomEnd="5dp"
                 app:boxStrokeColor="@color/green"
                 app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/lastNamefield"
+                app:layout_constraintTop_toBottomOf="@id/courseCodefield"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/emailSignUp"
+                    android:id="@+id/classStartTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/poppins_medium"
-                    android:hint="Email"
-                    android:inputType="textEmailAddress"
-                    android:minHeight="48dp"
-                    android:textCursorDrawable="@drawable/custom_cursor"
-                    android:textSize="13sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Gender (dropdown) -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/genderField"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="25dp"
-                app:boxBackgroundMode="outline"
-                app:endIconMode="dropdown_menu"
-                app:endIconTint="@color/green"
-                app:boxStrokeColor="@color/green"
-                app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/emailField"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <AutoCompleteTextView
-                    android:id="@+id/genderSignUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Gender"
-                    android:inputType="none"
-                    android:paddingStart="16dp"
-                    android:minHeight="56dp"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textCursorDrawable="@drawable/custom_cursor"
-                    android:textSize="13sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Birthdate -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/bdayField"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="25dp"
-                app:boxBackgroundMode="outline"
-                app:endIconMode="custom"
-                app:endIconDrawable="@drawable/calendar_icon"
-                app:endIconTint="@color/green"
-                app:boxStrokeColor="@color/green"
-                app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/genderField"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/bdaySignUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/poppins_medium"
-                    android:hint="Birthdate"
-                    android:focusable="false"
+                    android:hint="Class Start"
                     android:inputType="none"
                     android:minHeight="48dp"
                     android:textCursorDrawable="@drawable/custom_cursor"
                     android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Program -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/programField"
+                android:id="@+id/classEndField"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginHorizontal="25dp"
                 app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
                 app:boxStrokeColor="@color/green"
                 app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/bdayField"
+                app:layout_constraintTop_toBottomOf="@id/classStartField"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/programSignUp"
+                    android:id="@+id/classEndTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Program"
                     android:fontFamily="@font/poppins_medium"
-                    android:inputType="text"
+                    android:hint="Class End"
+                    android:inputType="none"
                     android:minHeight="48dp"
                     android:textCursorDrawable="@drawable/custom_cursor"
                     android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Contact Number Field -->
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/contactNumberField"
+                android:id="@+id/lateAttField"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
                 android:layout_marginTop="12dp"
                 android:layout_marginHorizontal="25dp"
                 app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
                 app:boxStrokeColor="@color/green"
                 app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/programField"
+                app:layout_constraintTop_toBottomOf="@id/classEndField"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/contactNumberSignUp"
+                    android:id="@+id/lateAttTxt"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Contact Number"
                     android:fontFamily="@font/poppins_medium"
-                    android:inputType="phone"
+                    android:hint="Late Attendance"
+                    android:inputType="none"
                     android:minHeight="48dp"
                     android:textCursorDrawable="@drawable/custom_cursor"
-                    android:textSize="13sp"
-                    android:text="+63 " />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Password -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/passwordField"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="25dp"
-                app:boxBackgroundMode="outline"
-                app:endIconMode="password_toggle"
-                app:endIconTint="@color/green"
-                app:boxStrokeColor="@color/green"
-                app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/contactNumberField"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/passwordSignUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Enter Password"
-                    android:inputType="textPassword"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textCursorDrawable="@drawable/custom_cursor"
                     android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Confirm Password -->
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/confirmPassField"
-                android:layout_width="0dp"
-                android:layout_height="70dp"
-                android:layout_marginTop="12dp"
-                android:layout_marginHorizontal="25dp"
-                app:boxBackgroundMode="outline"
-                app:endIconMode="password_toggle"
-                app:endIconTint="@color/green"
-                app:boxStrokeColor="@color/green"
-                app:hintTextColor="@color/custom_hint_color"
-                app:layout_constraintTop_toBottomOf="@id/passwordField"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/confirmPassSignUp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Confirm Password"
-                    android:inputType="textPassword"
-                    android:fontFamily="@font/poppins_medium"
-                    android:textCursorDrawable="@drawable/custom_cursor"
-                    android:textSize="13sp" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <!-- Terms and conditions -->
-            <CheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:layout_marginStart="13dp"
-                app:buttonTint="@color/green"
-                app:layout_constraintTop_toBottomOf="@id/confirmPassField"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/termsText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="25dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppins_regular"
-                android:text="I agree to the Terms and Conditions and Privacy Policy."
-                app:layout_constraintTop_toTopOf="@id/checkBox"
-                app:layout_constraintBottom_toBottomOf="@id/checkBox"
-                app:layout_constraintStart_toEndOf="@id/checkBox"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <!-- Sign Up Button -->
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnSignUp"
+                android:id="@+id/btnCreateCourse"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginHorizontal="25dp"
-                android:text="Sign Up"
+                android:text="Create Course"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
                 android:fontFamily="@font/poppins_semibold"
                 android:textSize="18sp"
                 app:cornerRadius="10dp"
                 app:backgroundTint="@color/green"
-                app:layout_constraintTop_toBottomOf="@id/checkBox"
+                app:layout_constraintTop_toBottomOf="@id/lateAttField"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <!-- Sign In Text -->
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="76dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="2dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Already have an account?"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toStartOf="@+id/txtSignIn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
-
-            <TextView
-                android:id="@+id/txtSignIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="91dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Sign in here."
-                android:textColor="@color/green"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView10"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
+                app:layout_constraintEnd_toEndOf="parent"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

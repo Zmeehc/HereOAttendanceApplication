@@ -9,6 +9,7 @@ public class User {
     private String gender;
     private String birthdate;
     private String program;
+    private String contactNumber;
     private String userType;
     private String profileImageUrl;
     private long createdAt;
@@ -17,7 +18,7 @@ public class User {
     public User() {}
     
     public User(String idNumber, String firstName, String middleName, String lastName, 
-                String email, String gender, String birthdate, String program, String userType) {
+                String email, String gender, String birthdate, String program, String contactNumber, String userType) {
         this.idNumber = idNumber;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -26,6 +27,7 @@ public class User {
         this.gender = gender;
         this.birthdate = birthdate;
         this.program = program;
+        this.contactNumber = contactNumber;
         this.userType = userType;
         this.createdAt = System.currentTimeMillis();
     }
@@ -39,6 +41,7 @@ public class User {
     public String getGender() { return gender; }
     public String getBirthdate() { return birthdate; }
     public String getProgram() { return program; }
+    public String getContactNumber() { return contactNumber; }
     public String getUserType() { return userType; }
     public String getProfileImageUrl() { return profileImageUrl; }
     public long getCreatedAt() { return createdAt; }
@@ -52,6 +55,7 @@ public class User {
     public void setGender(String gender) { this.gender = gender; }
     public void setBirthdate(String birthdate) { this.birthdate = birthdate; }
     public void setProgram(String program) { this.program = program; }
+    public void setContactNumber(String contactNumber) { this.contactNumber = contactNumber; }
     public void setUserType(String userType) { this.userType = userType; }
     public void setProfileImageUrl(String profileImageUrl) { this.profileImageUrl = profileImageUrl; }
     public void setCreatedAt(long createdAt) { this.createdAt = createdAt; }

@@ -44,7 +44,7 @@ public class TeacherSignUpActivity extends AppCompatActivity {
 
     // Form fields
     private TextInputEditText txtIDNo, firstNameSignup, middleNameSignUp, lastNameSignUp;
-    private TextInputEditText emailSignUp, bdaySignUp, programSignUp, passwordSignUp, confirmPassSignUp;
+    private TextInputEditText emailSignUp, bdaySignUp, programSignUp, contactNumberSignUp, passwordSignUp, confirmPassSignUp;
     private AutoCompleteTextView genderSignUp;
     private CheckBox checkBox;
     private MaterialButton btnSignUp;
@@ -92,6 +92,7 @@ public class TeacherSignUpActivity extends AppCompatActivity {
         genderSignUp = findViewById(R.id.genderSignUp);
         bdaySignUp = findViewById(R.id.bdaySignUp);
         programSignUp = findViewById(R.id.programSignUp);
+        contactNumberSignUp = findViewById(R.id.contactNumberSignUp);
         passwordSignUp = findViewById(R.id.passwordSignUp);
         confirmPassSignUp = findViewById(R.id.confirmPassSignUp);
         checkBox = findViewById(R.id.checkBox);
@@ -204,6 +205,19 @@ public class TeacherSignUpActivity extends AppCompatActivity {
             isValid = false;
         }
 
+        // Validate Contact Number
+        String contactNumber = contactNumberSignUp.getText().toString().trim();
+        if (TextUtils.isEmpty(contactNumber) || contactNumber.equals("+63 ")) {
+            contactNumberSignUp.setError("Contact number is required");
+            isValid = false;
+        } else if (!contactNumber.startsWith("+63 ")) {
+            contactNumberSignUp.setError("Contact number must start with +63");
+            isValid = false;
+        } else if (contactNumber.length() < 7) { // +63 + at least 1 digit
+            contactNumberSignUp.setError("Please enter a valid contact number");
+            isValid = false;
+        }
+
         // Validate Password
         String password = passwordSignUp.getText().toString().trim();
         if (TextUtils.isEmpty(password)) {
@@ -274,6 +288,7 @@ public class TeacherSignUpActivity extends AppCompatActivity {
         userData.put("gender", genderSignUp.getText().toString().trim());
         userData.put("birthdate", bdaySignUp.getText().toString().trim());
         userData.put("program", programSignUp.getText().toString().trim());
+        userData.put("contactNumber", contactNumberSignUp.getText().toString().trim());
         userData.put("userType", "teacher");
         userData.put("createdAt", System.currentTimeMillis());
 
