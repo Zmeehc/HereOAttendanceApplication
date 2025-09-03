@@ -55,6 +55,8 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             intent.putExtra("courseSessionCount", c.sessionCount);
             context.startActivity(intent);
         });
+
+
     }
 
     @Override
@@ -76,5 +78,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     }
 
     private static String nullSafe(String s) { return s == null ? "" : s; }
+
+
 }
 

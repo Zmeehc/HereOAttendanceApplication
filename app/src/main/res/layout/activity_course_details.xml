@@ -44,20 +44,29 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/courseCardView"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/green2"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
-        app:strokeWidth="2dp">
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/courseCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/green2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="2dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/cardviewDetails"
@@ -219,54 +228,57 @@
                 app:layout_constraintTop_toBottomOf="@id/dateRowDetail" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/scanQrbtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:backgroundTint="@color/green"
-        app:icon="@drawable/camera"
-        android:fontFamily="@font/poppins_medium"
-        android:text="Scan Qr Code"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:cornerRadius="6dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/courseCardView" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/stopAttendancebtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:backgroundTint="@color/green"
-        android:fontFamily="@font/poppins_medium"
-        android:text="End Attendance"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:cornerRadius="6dp"
-        app:icon="@drawable/stop"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/courseCardView" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/scanQrbtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/green"
+                    app:icon="@drawable/camera"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="Scan Qr Code"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    app:cornerRadius="6dp" />
 
-    <TextView
-        android:id="@+id/studPresenttxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Students Present:"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/scanQrbtn"
-        android:fontFamily="@font/poppins_semibold"
-        />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/stopAttendancebtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="10dp"
+                    android:backgroundTint="@color/green"
+                    android:fontFamily="@font/poppins_medium"
+                    android:text="End Attendance"
+                    android:textColor="@color/white"
+                    android:textSize="10sp"
+                    app:cornerRadius="6dp"
+                    app:icon="@drawable/stop" />
 
+            </LinearLayout>
 
+            <TextView
+                android:id="@+id/studPresenttxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Students Present:"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_semibold" />
 
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

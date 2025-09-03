@@ -14,9 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+
+
 import com.llavore.hereoattendance.utils.SessionManager;
-
-
 
 public class TeacherLoginActivity extends AppCompatActivity {
 
@@ -26,6 +26,7 @@ public class TeacherLoginActivity extends AppCompatActivity {
     private MaterialButton btnLogin;
     private FirebaseAuth mAuth;
     private SessionManager sessionManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +66,41 @@ public class TeacherLoginActivity extends AppCompatActivity {
                 return;
             }
 
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            // Save session data
-                            String userId = mAuth.getCurrentUser().getUid();
-                            sessionManager.setLogin(true, userId, "teacher");
-                            
-                            Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(this, TeacherDashboard.class));
-                            finish();
-                        } else {
-                            Toast.makeText(this, "Login Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
+            // Attempt login
+            attemptLogin(email, password);
         });
     }
+    
+    private void attemptLogin(String email, String password) {
+        // Show loading state
+        btnLogin.setEnabled(false);
+        btnLogin.setText("Logging in...");
+        
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Save session data
+                        String userId = mAuth.getCurrentUser().getUid();
+                        sessionManager.setLogin(true, userId, "teacher");
+                        
+                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, APIActivity2.class));
+                        finish();
+                    } else {
+                        // Login failed
+                        handleFailedLogin();
+                    }
+                });
+    }
+    
+    private void handleFailedLogin() {
+        // Reset button state
+        btnLogin.setEnabled(true);
+        btnLogin.setText("Login");
+
+        // Show error message
+        Toast.makeText(this, "Login Failed. Please check your credentials.", Toast.LENGTH_LONG).show();
+    }
+    
+
 }

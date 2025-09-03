@@ -167,6 +167,11 @@ public class CreateCourseActivity extends AppCompatActivity {
     }
 
     private void saveCourse() {
+        // Validate all required fields
+        if (!validateFields()) {
+            return;
+        }
+
         String uid = FirebaseAuth.getInstance().getCurrentUser() != null ?
                 FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
         if (uid == null) {
@@ -185,21 +190,80 @@ public class CreateCourseActivity extends AppCompatActivity {
         c.studentCount = 0;
         c.sessionCount = 0;
 
+        // Save to the current logged-in user's courses
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child("teachers").child(uid).child("courses");
         String key = ref.push().getKey();
         if (key == null) {
             Toast.makeText(this, "Failed to create key", Toast.LENGTH_SHORT).show();
             return;
         }
+        
+        // Set the course ID for reference
+        c.id = key;
+        
         ref.child(key).setValue(c).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(this, "Course created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Course created successfully!", Toast.LENGTH_SHORT).show();
                 startActivity(new Intent(this, ActiveCoursesActivity.class));
                 finish();
             } else {
-                Toast.makeText(this, "Failed: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Failed to create course: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private boolean validateFields() {
+        String courseName = textOf(findViewById(R.id.txtCourseName));
+        String room = textOf(findViewById(R.id.roomTxt));
+        String schedule = textOf(scheduleTxt);
+        String startTime = textOf(classStartTxt);
+        String endTime = textOf(classEndTxt);
+        String lateAfter = textOf(lateAttTxt);
+        String courseCode = textOf(courseCodeTxt);
+
+        if (courseName.isEmpty()) {
+            findViewById(R.id.txtCourseName).requestFocus();
+            Toast.makeText(this, "Please enter course name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (room.isEmpty()) {
+            findViewById(R.id.roomTxt).requestFocus();
+            Toast.makeText(this, "Please enter room number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (schedule.isEmpty()) {
+            scheduleTxt.requestFocus();
+            Toast.makeText(this, "Please select schedule days", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (startTime.isEmpty()) {
+            classStartTxt.requestFocus();
+            Toast.makeText(this, "Please select class start time", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (endTime.isEmpty()) {
+            classEndTxt.requestFocus();
+            Toast.makeText(this, "Please select class end time", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (lateAfter.isEmpty()) {
+            lateAttTxt.requestFocus();
+            Toast.makeText(this, "Please select late attendance time", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (courseCode.isEmpty()) {
+            courseCodeTxt.requestFocus();
+            Toast.makeText(this, "Please ensure course code is generated", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        return true;
     }
 
     private String textOf(TextInputEditText e) {

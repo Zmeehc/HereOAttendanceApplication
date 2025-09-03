@@ -102,7 +102,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Email"
-                        android:textColor="@color/darker_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppins_medium" />
 
@@ -134,7 +134,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Full Name"
-                        android:textColor="@color/darker_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppins_medium" />
 
@@ -166,7 +166,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Gender"
-                        android:textColor="@color/darker_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppins_medium" />
 
@@ -198,7 +198,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Birthdate"
-                        android:textColor="@color/darker_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppins_medium" />
 
@@ -230,7 +230,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ID Number"
-                        android:textColor="@color/darker_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppins_medium" />
 
@@ -262,7 +262,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Contact Number"
-                        android:textColor="@color/darker_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppins_medium" />
 
@@ -294,7 +294,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Password"
-                        android:textColor="@color/darker_gray"
+                        android:textColor="@color/gray"
                         android:textSize="14sp"
                         android:fontFamily="@font/poppins_medium" />
 

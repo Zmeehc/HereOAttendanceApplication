@@ -57,5 +57,7 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("com.google.android.material:material:1.12.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     implementation(libs.glide)
 }

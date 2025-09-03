@@ -26,6 +26,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.llavore.hereoattendance.model.User;
 import com.llavore.hereoattendance.utils.SessionManager;
+import com.llavore.hereoattendance.NotificationsActivity;
+import com.llavore.hereoattendance.SettingsActivity;
+import com.llavore.hereoattendance.ReportsActivity;
+import com.llavore.hereoattendance.ArchivesActivity;
+import com.llavore.hereoattendance.SmsAlertsActivity;
 import com.bumptech.glide.Glide;
 
 public class TeacherDashboard extends AppCompatActivity {
@@ -93,13 +98,15 @@ public class TeacherDashboard extends AppCompatActivity {
                 drawerLayout.closeDrawers();
                 return true;
             } else if (item.getItemId() == R.id.nav_notifications) {
-                // Handle notifications navigation
-                // You can add navigation to notifications activity here
+                // Navigate to notifications
+                Intent intent = new Intent(TeacherDashboard.this, NotificationsActivity.class);
+                startActivity(intent);
                 drawerLayout.closeDrawers();
                 return true;
             } else if (item.getItemId() == R.id.nav_settings) {
-                // Handle settings navigation
-                // You can add navigation to settings activity here
+                // Navigate to settings
+                Intent intent = new Intent(TeacherDashboard.this, SettingsActivity.class);
+                startActivity(intent);
                 drawerLayout.closeDrawers();
                 return true;
             }
@@ -107,6 +114,15 @@ public class TeacherDashboard extends AppCompatActivity {
             return false;
         });
 
+        // Setup dashboard card click listeners
+        setupDashboardCards();
+        
+        // Set current date and day
+        setCurrentDateAndDay();
+        
+        // Start timer to update date at midnight
+        startDateUpdateTimer();
+        
         // Load user profile picture and data
         loadUserProfilePicture();
         loadUserData();
@@ -118,7 +134,9 @@ public class TeacherDashboard extends AppCompatActivity {
         super.onResume();
         // Refresh profile picture when returning to dashboard
         loadUserProfilePicture();
-
+        
+        // Refresh current date and day when returning to dashboard
+        setCurrentDateAndDay();
 
         // getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green));
     }
@@ -223,6 +241,64 @@ public class TeacherDashboard extends AppCompatActivity {
             name.append(user.getLastName());
         }
         return name.toString();
+    }
+
+    private void setCurrentDateAndDay() {
+        TextView todaySessionsText = findViewById(R.id.textView13);
+        if (todaySessionsText != null) {
+            java.text.SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("MMMM, dd yyyy", java.util.Locale.getDefault());
+            java.text.SimpleDateFormat dayFormat = new java.text.SimpleDateFormat("EEEE", java.util.Locale.getDefault());
+            
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            String currentDate = dateFormat.format(calendar.getTime());
+            String currentDay = dayFormat.format(calendar.getTime());
+            
+            String formattedText = "Today's Sessions - " + currentDate + " " + currentDay;
+            todaySessionsText.setText(formattedText);
+        }
+    }
+
+    private void startDateUpdateTimer() {
+        java.util.Timer timer = new java.util.Timer();
+        java.util.TimerTask task = new java.util.TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(() -> setCurrentDateAndDay());
+            }
+        };
+        
+        // Calculate time until next midnight
+        java.util.Calendar calendar = java.util.Calendar.getInstance();
+        calendar.add(java.util.Calendar.DAY_OF_MONTH, 1);
+        calendar.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        calendar.set(java.util.Calendar.MINUTE, 0);
+        calendar.set(java.util.Calendar.SECOND, 0);
+        calendar.set(java.util.Calendar.MILLISECOND, 0);
+        
+        long delay = calendar.getTimeInMillis() - System.currentTimeMillis();
+        
+        // Schedule the task to run at midnight and then every 24 hours
+        timer.scheduleAtFixedRate(task, delay, 24 * 60 * 60 * 1000);
+    }
+
+    private void setupDashboardCards() {
+        // Reports card
+        findViewById(R.id.reportCardView).setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherDashboard.this, ReportsActivity.class);
+            startActivity(intent);
+        });
+
+        // Archives card
+        findViewById(R.id.archivesCardView).setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherDashboard.this, ArchivesActivity.class);
+            startActivity(intent);
+        });
+
+        // SMS Alerts card
+        findViewById(R.id.smsCardView).setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherDashboard.this, SmsAlertsActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadCourseCount() {

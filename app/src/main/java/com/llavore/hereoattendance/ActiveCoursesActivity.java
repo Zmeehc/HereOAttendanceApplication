@@ -101,3 +101,4 @@ public class ActiveCoursesActivity extends AppCompatActivity {
         });
     }
 }
+
