@@ -22,6 +22,7 @@ navigationFragment = "2.6.0"
 navigationUi = "2.6.0"
 core = "1.13.0"
 firebaseStorage = "22.0.0"
+playServicesLocation = "21.3.0"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
@@ -46,6 +47,7 @@ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version
 core = { group = "androidx.core", name = "core", version.ref = "core" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converterGson" }
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
