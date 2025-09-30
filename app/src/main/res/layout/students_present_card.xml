@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="8dp">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<!-- Left accent bar -->
+		<View
+			android:id="@+id/leftAccent"
+			android:layout_width="8dp"
+			android:layout_height="0dp"
+			android:background="@color/green4"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<!-- Profile picture placeholder -->
+		<ImageView
+			android:id="@+id/profileImage"
+			android:layout_width="70dp"
+			android:layout_height="70dp"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="16dp"
+			android:contentDescription="Student photo"
+			android:src="@drawable/picture_placeholder"
+			app:layout_constraintStart_toEndOf="@id/leftAccent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<!-- Name -->
+		<TextView
+			android:id="@+id/studentName"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="12dp"
+			android:fontFamily="@font/poppins_semibold"
+			android:text="Lastname, Firstname M."
+			android:textColor="@color/black"
+			android:textSize="18sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toEndOf="@id/profileImage"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<!-- ID number -->
+		<TextView
+			android:id="@+id/studentId"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="12dp"
+			android:fontFamily="@font/poppins_semibold"
+			android:text="000000"
+			android:textColor="@color/black"
+			android:textSize="16sp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="@id/studentName"
+			app:layout_constraintTop_toBottomOf="@id/studentName" />
+
+		<!-- Time in -->
+		<TextView
+			android:id="@+id/timeIn"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="12dp"
+			android:fontFamily="@font/poppins_regular"
+			android:text="Time in: HH:MM AM/PM"
+			android:textColor="@color/black"
+			android:textSize="15sp"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="@id/studentId"
+			app:layout_constraintTop_toBottomOf="@id/studentId" />
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>
+
+
