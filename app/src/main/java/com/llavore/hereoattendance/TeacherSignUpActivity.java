@@ -49,6 +49,8 @@ public class TeacherSignUpActivity extends AppCompatActivity {
     private CheckBox checkBox;
     private MaterialButton btnSignUp;
     private TextInputLayout bdayField;
+    private TextInputLayout passwordField;
+    private TextInputLayout confirmPassField;
 
     // Firebase
     private FirebaseAuth mAuth;
@@ -80,7 +82,7 @@ public class TeacherSignUpActivity extends AppCompatActivity {
     }
 
     private void initializeViews() {
-        backToLogin = findViewById(R.id.backLoginArrow);
+        backToLogin = findViewById(R.id.backArrow);
         SignIn = findViewById(R.id.txtSignIn);
 
         // Form fields
@@ -98,6 +100,8 @@ public class TeacherSignUpActivity extends AppCompatActivity {
         checkBox = findViewById(R.id.checkBox);
         btnSignUp = findViewById(R.id.btnSignUp);
         bdayField = findViewById(R.id.bdayField);
+        passwordField = findViewById(R.id.passwordField);
+        confirmPassField = findViewById(R.id.confirmPassField);
     }
 
     private void setupClickListeners() {
@@ -114,7 +118,19 @@ public class TeacherSignUpActivity extends AppCompatActivity {
         });
 
         btnSignUp.setOnClickListener(v -> {
+            // Prevent accidental double taps while already processing
+            if (!btnSignUp.isEnabled()) return;
+
             if (validateForm()) {
+                // Hide keyboard to improve UX
+                try {
+                    android.view.inputmethod.InputMethodManager imm = (android.view.inputmethod.InputMethodManager) getSystemService(android.content.Context.INPUT_METHOD_SERVICE);
+                    View current = getCurrentFocus();
+                    if (imm != null && current != null) {
+                        imm.hideSoftInputFromWindow(current.getWindowToken(), 0);
+                    }
+                } catch (Exception ignored) { }
+
                 registerUser();
             }
         });
@@ -158,6 +174,12 @@ public class TeacherSignUpActivity extends AppCompatActivity {
 
     private boolean validateForm() {
         boolean isValid = true;
+
+        // Clear previous errors
+        if (passwordField != null) passwordField.setError(null);
+        if (confirmPassField != null) confirmPassField.setError(null);
+        passwordSignUp.setError(null);
+        confirmPassSignUp.setError(null);
 
         // Validate ID Number
         if (TextUtils.isEmpty(txtIDNo.getText().toString().trim())) {
@@ -221,20 +243,24 @@ public class TeacherSignUpActivity extends AppCompatActivity {
         // Validate Password
         String password = passwordSignUp.getText().toString().trim();
         if (TextUtils.isEmpty(password)) {
-            passwordSignUp.setError("Password is required");
+            if (passwordField != null) passwordField.setError("Password is required");
+            else passwordSignUp.setError("Password is required");
             isValid = false;
         } else if (password.length() < 6) {
-            passwordSignUp.setError("Password must be at least 6 characters");
+            if (passwordField != null) passwordField.setError("Password must be at least 6 characters");
+            else passwordSignUp.setError("Password must be at least 6 characters");
             isValid = false;
         }
 
         // Validate Confirm Password
         String confirmPassword = confirmPassSignUp.getText().toString().trim();
         if (TextUtils.isEmpty(confirmPassword)) {
-            confirmPassSignUp.setError("Please confirm your password");
+            if (confirmPassField != null) confirmPassField.setError("Please confirm your password");
+            else confirmPassSignUp.setError("Please confirm your password");
             isValid = false;
         } else if (!password.equals(confirmPassword)) {
-            confirmPassSignUp.setError("Passwords do not match");
+            if (confirmPassField != null) confirmPassField.setError("Passwords do not match");
+            else confirmPassSignUp.setError("Passwords do not match");
             isValid = false;
         }
 
@@ -262,6 +288,11 @@ public class TeacherSignUpActivity extends AppCompatActivity {
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
                             saveUserToDatabase(user.getUid());
+                        } else {
+                            // Fallback if user is unexpectedly null
+                            btnSignUp.setEnabled(true);
+                            btnSignUp.setText("Sign Up");
+                            Toast.makeText(TeacherSignUpActivity.this, "Registration error: user not available", Toast.LENGTH_LONG).show();
                         }
                     } else {
                         // Registration failed
@@ -270,10 +301,24 @@ public class TeacherSignUpActivity extends AppCompatActivity {
 
                         String errorMessage = "Registration failed";
                         if (task.getException() != null) {
-                            errorMessage = task.getException().getMessage();
+                            Throwable ex = task.getException();
+                            String msg = ex.getMessage();
+                            if (msg != null && msg.toLowerCase().contains("email") && msg.toLowerCase().contains("already")) {
+                                errorMessage = "Email already in use";
+                            } else if (msg != null && msg.toLowerCase().contains("password")) {
+                                errorMessage = "Weak password. Use at least 6 characters.";
+                            } else {
+                                errorMessage = msg;
+                            }
                         }
                         Toast.makeText(TeacherSignUpActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                     }
+                })
+                .addOnFailureListener(e -> {
+                    // Defensive: ensure button state is restored on low-level failures
+                    btnSignUp.setEnabled(true);
+                    btnSignUp.setText("Sign Up");
+                    Toast.makeText(TeacherSignUpActivity.this, "Registration error: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -289,6 +334,8 @@ public class TeacherSignUpActivity extends AppCompatActivity {
         userData.put("birthdate", bdaySignUp.getText().toString().trim());
         userData.put("program", programSignUp.getText().toString().trim());
         userData.put("contactNumber", contactNumberSignUp.getText().toString().trim());
+        // Store password as requested (note: storing plain text passwords is insecure)
+        userData.put("password", passwordSignUp.getText().toString().trim());
         userData.put("userType", "teacher");
         userData.put("createdAt", System.currentTimeMillis());
 

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="8dp">
+
+	<androidx.constraintlayout.widget.ConstraintLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content">
+
+		<!-- Left accent bar -->
+		<View
+			android:id="@+id/leftAccent"
+			android:layout_width="8dp"
+			android:layout_height="0dp"
+			android:background="@color/green4"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<!-- Three dots menu icon -->
+		<ImageView
+			android:id="@+id/menuIcon"
+			android:layout_width="24dp"
+			android:layout_height="24dp"
+			android:contentDescription="More options"
+			android:src="@drawable/three_dots"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="12dp"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<!-- Title: Subject | Room -->
+		<TextView
+			android:id="@+id/reportTitle"
+			android:layout_width="0dp"
+			android:layout_height="wrap_content"
+			android:layout_marginStart="16dp"
+			android:layout_marginTop="12dp"
+			android:layout_marginEnd="12dp"
+			android:fontFamily="@font/poppins_semibold"
+			android:text="Report Name.xslx"
+			android:textColor="@color/green"
+			android:textSize="18sp"
+			app:layout_constraintEnd_toStartOf="@id/menuIcon"
+			app:layout_constraintStart_toEndOf="@id/leftAccent"
+			app:layout_constraintTop_toTopOf="parent" />
+
+		<!-- Subtitle: Time | Days -->
+
+
+
+		<!-- Bottom row: Students (left) | Sessions (right) -->
+		<LinearLayout
+			android:id="@+id/bottomRow"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="7dp"
+			android:layout_marginBottom="10dp"
+			android:gravity="center_vertical"
+			android:orientation="horizontal"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintStart_toStartOf="@id/reportTitle"
+			app:layout_constraintTop_toBottomOf="@id/reportTitle">
+
+			<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="center_vertical"
+				android:orientation="horizontal">
+
+				<ImageView
+					android:layout_width="24dp"
+					android:layout_height="24dp"
+					android:contentDescription="Students"
+					android:src="@drawable/calendar_icon" />
+
+				<TextView
+					android:id="@+id/studentsText"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_marginStart="12dp"
+					android:fontFamily="@font/poppins_regular"
+					android:text="Month Day, Year"
+					android:textColor="@color/black"
+					android:textSize="16sp" />
+			</LinearLayout>
+		</LinearLayout>
+
+	</androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

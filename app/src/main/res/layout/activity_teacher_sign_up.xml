@@ -39,7 +39,7 @@
             android:text="Create an Account"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@id/backLoginArrow"
+            app:layout_constraintStart_toEndOf="@id/backArrow"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
