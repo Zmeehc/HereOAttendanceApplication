@@ -1,4 +1,4 @@
-package com.llavore.hereoattendance;
+package com.llavore.hereoattendance.teacher;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -32,6 +32,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.llavore.hereoattendance.R;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -175,11 +176,21 @@ public class TeacherSignUpActivity extends AppCompatActivity {
     private boolean validateForm() {
         boolean isValid = true;
 
-        // Clear previous errors
-        if (passwordField != null) passwordField.setError(null);
-        if (confirmPassField != null) confirmPassField.setError(null);
-        passwordSignUp.setError(null);
-        confirmPassSignUp.setError(null);
+        // Clear previous errors on TextInputLayouts
+        txtIDNo.setError(null);
+        firstNameSignup.setError(null);
+        lastNameSignUp.setError(null);
+        emailSignUp.setError(null);
+        genderSignUp.setError(null);
+        bdaySignUp.setError(null);
+        programSignUp.setError(null);
+        contactNumberSignUp.setError(null);
+
+        // Clear password errors properly
+        passwordField.setError(null);
+        passwordField.setErrorEnabled(false);
+        confirmPassField.setError(null);
+        confirmPassField.setErrorEnabled(false);
 
         // Validate ID Number
         if (TextUtils.isEmpty(txtIDNo.getText().toString().trim())) {
@@ -229,10 +240,10 @@ public class TeacherSignUpActivity extends AppCompatActivity {
 
         // Validate Contact Number
         String contactNumber = contactNumberSignUp.getText().toString().trim();
-        if (TextUtils.isEmpty(contactNumber) || contactNumber.equals("+63 ")) {
+        if (TextUtils.isEmpty(contactNumber) || contactNumber.equals("+63") || contactNumber.equals("+63 ")) {
             contactNumberSignUp.setError("Contact number is required");
             isValid = false;
-        } else if (!contactNumber.startsWith("+63 ")) {
+        } else if (!contactNumber.startsWith("+63")) {
             contactNumberSignUp.setError("Contact number must start with +63");
             isValid = false;
         } else if (contactNumber.length() < 7) { // +63 + at least 1 digit
@@ -240,27 +251,28 @@ public class TeacherSignUpActivity extends AppCompatActivity {
             isValid = false;
         }
 
-        // Validate Password
-        String password = passwordSignUp.getText().toString().trim();
+        // Validate Password - Get the actual text without trimming first
+        String password = passwordSignUp.getText() != null ? passwordSignUp.getText().toString() : "";
+        String confirmPassword = confirmPassSignUp.getText() != null ? confirmPassSignUp.getText().toString() : "";
+
         if (TextUtils.isEmpty(password)) {
-            if (passwordField != null) passwordField.setError("Password is required");
-            else passwordSignUp.setError("Password is required");
+            passwordField.setError("Password is required");
+            passwordField.setErrorEnabled(true);
             isValid = false;
         } else if (password.length() < 6) {
-            if (passwordField != null) passwordField.setError("Password must be at least 6 characters");
-            else passwordSignUp.setError("Password must be at least 6 characters");
+            passwordField.setError("Password must be at least 6 characters");
+            passwordField.setErrorEnabled(true);
             isValid = false;
         }
 
         // Validate Confirm Password
-        String confirmPassword = confirmPassSignUp.getText().toString().trim();
         if (TextUtils.isEmpty(confirmPassword)) {
-            if (confirmPassField != null) confirmPassField.setError("Please confirm your password");
-            else confirmPassSignUp.setError("Please confirm your password");
+            confirmPassField.setError("Please confirm your password");
+            confirmPassField.setErrorEnabled(true);
             isValid = false;
         } else if (!password.equals(confirmPassword)) {
-            if (confirmPassField != null) confirmPassField.setError("Passwords do not match");
-            else confirmPassSignUp.setError("Passwords do not match");
+            confirmPassField.setError("Passwords do not match");
+            confirmPassField.setErrorEnabled(true);
             isValid = false;
         }
 

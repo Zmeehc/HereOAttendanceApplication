@@ -1,4 +1,4 @@
-package com.llavore.hereoattendance;
+package com.llavore.hereoattendance.teacher;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.adapters.CourseAdapter;
 import com.llavore.hereoattendance.models.Course;
 

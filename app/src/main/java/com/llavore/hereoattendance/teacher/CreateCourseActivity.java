@@ -1,4 +1,4 @@
-package com.llavore.hereoattendance;
+package com.llavore.hereoattendance.teacher;
 
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
@@ -19,6 +19,7 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.models.Course;
 
 import java.security.SecureRandom;

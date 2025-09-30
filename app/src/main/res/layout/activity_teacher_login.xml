@@ -12,7 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/white"
-    tools:context=".TeacherLoginActivity">
+    tools:context=".teacher.TeacherLoginActivity">
 
     <ImageView
         android:id="@+id/imageView2"

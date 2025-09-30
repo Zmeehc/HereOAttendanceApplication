@@ -1,4 +1,4 @@
-package com.llavore.hereoattendance;
+package com.llavore.hereoattendance.teacher;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,18 +6,20 @@ import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class SmsAlertsActivity extends AppCompatActivity {
+import com.llavore.hereoattendance.R;
+
+public class ArchivesActivity extends AppCompatActivity {
 
     private ImageView backToDashboardButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sms_alerts);
+        setContentView(R.layout.activity_archives);
 
         backToDashboardButton = findViewById(R.id.backDashArrow);
         backToDashboardButton.setOnClickListener(v -> {
-            Intent intent = new Intent(SmsAlertsActivity.this, TeacherDashboard.class);
+            Intent intent = new Intent(ArchivesActivity.this, TeacherDashboard.class);
             startActivity(intent);
             finish();
         });

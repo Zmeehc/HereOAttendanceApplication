@@ -38,50 +38,50 @@
             android:name=".SMSAlertActivity"
             android:exported="false" />
         <activity
-            android:name=".ArchivesActivity"
+            android:name=".teacher.ArchivesActivity"
             android:exported="false" />
         <activity
-            android:name=".ReportsActivity"
+            android:name=".teacher.ReportsActivity"
             android:exported="false" />
         <activity
-            android:name=".SmsAlertsActivity"
+            android:name=".teacher.SmsAlertsActivity"
             android:exported="false" />
         <activity
-            android:name=".NotificationsActivity"
+            android:name=".teacher.NotificationsActivity"
             android:exported="false" />
         <activity
-            android:name=".SettingsActivity"
+            android:name=".teacher.SettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".CourseDetails"
+            android:name=".teacher.CourseDetails"
             android:exported="false" />
         <activity
-            android:name=".CreateCourseActivity"
+            android:name=".teacher.CreateCourseActivity"
             android:exported="false" />
         <activity
-            android:name=".ActiveCoursesActivity"
+            android:name=".teacher.ActiveCoursesActivity"
             android:exported="false" />
         <activity
-            android:name=".TeacherProfileActivity"
+            android:name=".teacher.TeacherProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".TeacherEditProfileActivity"
+            android:name=".teacher.TeacherEditProfileActivity"
             android:exported="false" />
         <activity
             android:name=".DashboardLessonActivity"
             android:exported="false" />
         <activity
-            android:name=".TeacherDashboard"
+            android:name=".teacher.TeacherDashboard"
             android:exported="false" />
         <activity
-            android:name=".TeacherSignUpActivity"
+            android:name=".teacher.TeacherSignUpActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
-            android:name=".TeacherLoginActivity"
+            android:name=".teacher.TeacherLoginActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".teacher.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

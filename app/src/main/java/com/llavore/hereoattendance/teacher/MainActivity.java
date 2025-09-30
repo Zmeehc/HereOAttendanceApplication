@@ -1,4 +1,4 @@
-package com.llavore.hereoattendance;
+package com.llavore.hereoattendance.teacher;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -11,6 +11,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {

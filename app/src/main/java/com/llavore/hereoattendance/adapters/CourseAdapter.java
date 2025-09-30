@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.models.Course;
-import com.llavore.hereoattendance.CourseDetails;
+import com.llavore.hereoattendance.teacher.CourseDetails;
 
 import java.util.List;
 

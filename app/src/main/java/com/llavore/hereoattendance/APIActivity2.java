@@ -14,6 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import com.llavore.hereoattendance.teacher.MainActivity;
+import com.llavore.hereoattendance.teacher.TeacherDashboard;
+import com.llavore.hereoattendance.teacher.TeacherSignUpActivity;
 import com.llavore.hereoattendance.utils.LoginSecurityManager;
 import com.llavore.hereoattendance.utils.SessionManager;
 

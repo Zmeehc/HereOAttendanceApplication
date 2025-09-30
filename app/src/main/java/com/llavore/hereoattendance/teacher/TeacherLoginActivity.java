@@ -1,4 +1,4 @@
-package com.llavore.hereoattendance;
+package com.llavore.hereoattendance.teacher;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +16,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 
 
+import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.utils.SessionManager;
 
 public class TeacherLoginActivity extends AppCompatActivity {

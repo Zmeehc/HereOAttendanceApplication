@@ -1,7 +1,7 @@
 // Fixed TeacherEditProfileActivity.java back arrow issue
 // In your TeacherEditProfileActivity.java, make sure the back arrow ID matches the layout
 
-package com.llavore.hereoattendance;
+package com.llavore.hereoattendance.teacher;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -12,25 +12,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.core.content.ContextCompat;
+
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.model.User;
 import com.llavore.hereoattendance.utils.SessionManager;
-import com.llavore.hereoattendance.NotificationsActivity;
-import com.llavore.hereoattendance.SettingsActivity;
 import com.bumptech.glide.Glide;
 
 public class TeacherProfileActivity extends AppCompatActivity {
