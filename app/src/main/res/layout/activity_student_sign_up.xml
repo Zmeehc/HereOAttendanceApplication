@@ -1,0 +1,521 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    tools:context=".student.StudentSignup">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:padding="16dp"
+        android:background="@color/green"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/idSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Create an Account"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@id/backArrow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:descendantFocusability="beforeDescendants"
+        android:focusableInTouchMode="true"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="100dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/edpNumberField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginHorizontal="25dp"
+                android:layout_marginTop="0dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edpNumberSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="EDP Number"
+                    android:inputType="number"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/firstNameField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/edpNumberField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentFirstNameSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="First Name"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/middleNameField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/firstNameField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentMiddleNameSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Middle Name"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lastNameField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/middleNameField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentLastNameSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Last Name"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentEmailField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/lastNameField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentEmailSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentGenderField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:endIconMode="dropdown_menu"
+                app:endIconTint="@color/green"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/studentEmailField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <AutoCompleteTextView
+                    android:id="@+id/studentGenderSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Gender"
+                    android:inputType="none"
+                    android:paddingStart="16dp"
+                    android:minHeight="56dp"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentBdayField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:endIconMode="custom"
+                app:endIconDrawable="@drawable/calendar_icon"
+                app:endIconTint="@color/green"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/studentGenderField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentBdaySignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Birthdate"
+                    android:focusable="false"
+                    android:inputType="none"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentProgramField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/studentBdayField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentProgramSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Program"
+                    android:fontFamily="@font/poppins_medium"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentYearLevelField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/studentProgramField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentYearLevelSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Year Level"
+                    android:fontFamily="@font/poppins_medium"
+                    android:inputType="number"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentContactNumberField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/studentYearLevelField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentContactNumberSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Contact Number"
+                    android:fontFamily="@font/poppins_medium"
+                    android:inputType="phone"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp"
+                    android:text="+63 " />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/guardianNameField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/studentContactNumberField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentGuardianNameSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Parent/Guardian's Name"
+                    android:fontFamily="@font/poppins_medium"
+                    android:inputType="textPersonName"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/guardianContactField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/guardianNameField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentGuardianContactSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Parent/Guardian's Contact Number"
+                    android:fontFamily="@font/poppins_medium"
+                    android:inputType="phone"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp"
+                    android:text="+63 " />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentPasswordField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/green"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/guardianContactField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentPasswordSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Password"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/studentConfirmPassField"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginHorizontal="25dp"
+                app:boxBackgroundMode="outline"
+                app:endIconMode="password_toggle"
+                app:endIconTint="@color/green"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color"
+                app:layout_constraintTop_toBottomOf="@id/studentPasswordField"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/studentConfirmPassSignUp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Confirm Password"
+                    android:inputType="textPassword"
+                    android:fontFamily="@font/poppins_medium"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <CheckBox
+                android:id="@+id/studentTermsCheckBox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="13dp"
+                app:buttonTint="@color/green"
+                app:layout_constraintTop_toBottomOf="@id/studentConfirmPassField"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/studentTermsText"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="25dp"
+                android:textSize="14sp"
+                android:textColor="@color/black"
+                android:fontFamily="@font/poppins_regular"
+                android:text="I agree to the Terms and Conditions and Privacy Policy."
+                app:layout_constraintTop_toTopOf="@id/studentTermsCheckBox"
+                app:layout_constraintBottom_toBottomOf="@id/studentTermsCheckBox"
+                app:layout_constraintStart_toEndOf="@id/studentTermsCheckBox"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStudentSignUp"
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginHorizontal="25dp"
+                android:text="Sign Up"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="18sp"
+                app:cornerRadius="10dp"
+                app:backgroundTint="@color/green"
+                app:layout_constraintTop_toBottomOf="@id/studentTermsCheckBox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <TextView
+                android:id="@+id/studentHaveAccountLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="76dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="2dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Already have an account?"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toStartOf="@+id/studentSignIn"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnStudentSignUp" />
+
+            <TextView
+                android:id="@+id/studentSignIn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginEnd="91dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="Sign in here."
+                android:textColor="@color/green"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/studentHaveAccountLabel"
+                app:layout_constraintTop_toBottomOf="@+id/btnStudentSignUp" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
