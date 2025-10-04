@@ -1,11 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="160dp"
     android:background="@color/green"
     android:padding="16dp"
-    android:layout_marginBottom="16dp">
+    android:layout_marginBottom="16dp"
+    android:gravity="center_vertical">
 
-    <!-- Your image, name, and email can go here later -->
+    <!-- Profile Picture -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/navProfilePictureCard"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        app:cardCornerRadius="30dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@color/white">
+
+        <ImageView
+            android:id="@+id/navProfilePicture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/baseline_person_24"
+            android:contentDescription="Profile Picture"
+            android:scaleType="centerCrop"
+            android:padding="4dp" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- User Info -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="16dp">
+
+        <!-- Full Name -->
+        <TextView
+            android:id="@+id/navUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="User Name"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/poppins_semibold"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Email -->
+        <TextView
+            android:id="@+id/navUserEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="user@example.com"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:fontFamily="@font/poppins_regular"
+            android:maxLines="2"
+            android:ellipsize="end" />
+
+    </LinearLayout>
 
 </LinearLayout>

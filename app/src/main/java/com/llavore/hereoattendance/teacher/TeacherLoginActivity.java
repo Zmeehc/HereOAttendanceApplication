@@ -14,6 +14,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 
 import com.llavore.hereoattendance.R;
@@ -27,6 +32,7 @@ public class TeacherLoginActivity extends AppCompatActivity {
     private MaterialButton btnLogin;
     private FirebaseAuth mAuth;
     private SessionManager sessionManager;
+    private DatabaseReference mDatabase;
 
 
     @Override
@@ -42,6 +48,7 @@ public class TeacherLoginActivity extends AppCompatActivity {
         });
 
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         sessionManager = new SessionManager(this);
 
         switchRoles = findViewById(R.id.roleSwitch);
@@ -67,7 +74,7 @@ public class TeacherLoginActivity extends AppCompatActivity {
                 return;
             }
 
-            // Attempt login
+            // Attempt login with teacher role guard
             attemptLogin(email, password);
         });
     }
@@ -75,23 +82,46 @@ public class TeacherLoginActivity extends AppCompatActivity {
     private void attemptLogin(String email, String password) {
         // Show loading state
         btnLogin.setEnabled(false);
-        btnLogin.setText("Logging in...");
-        
+        btnLogin.setText("Checking...");
+
+        // Sign in first, then verify teacher role under users/teachers/{uid}
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Save session data
-                        String userId = mAuth.getCurrentUser().getUid();
-                        sessionManager.setLogin(true, userId, "teacher");
-                        
-                        Toast.makeText(this, "Login Successful", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, TeacherDashboard.class));
-                        finish();
+                        String userId = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
+                        if (userId == null) {
+                            handleFailedLogin();
+                            return;
+                        }
+
+                        mDatabase.child("users").child("teachers").child(userId)
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot snapshot) {
+                                        if (snapshot.exists()) {
+                                            sessionManager.setLogin(true, userId, "teacher");
+                                            Toast.makeText(TeacherLoginActivity.this, "Login Successful", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(TeacherLoginActivity.this, TeacherDashboard.class));
+                                            finish();
+                                        } else {
+                                            // Not a teacher, sign out and inform user
+                                            mAuth.signOut();
+                                            btnLogin.setEnabled(true);
+                                            btnLogin.setText("Login");
+                                            Toast.makeText(TeacherLoginActivity.this, "This account is not a teacher. Please use a Teacher Account.", Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError error) {
+                                        handleFailedLogin();
+                                    }
+                                });
                     } else {
-                        // Login failed
                         handleFailedLogin();
                     }
-                });
+                })
+                .addOnFailureListener(e -> handleFailedLogin());
     }
     
     private void handleFailedLogin() {

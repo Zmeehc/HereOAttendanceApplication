@@ -25,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.model.User;
 import com.llavore.hereoattendance.utils.SessionManager;
+import com.llavore.hereoattendance.utils.NavigationHeaderManager;
 import com.bumptech.glide.Glide;
 
 public class TeacherDashboard extends AppCompatActivity {
@@ -32,6 +33,7 @@ public class TeacherDashboard extends AppCompatActivity {
     private ImageView burgerIcon;
     private SessionManager sessionManager;
     private DatabaseReference mDatabase;
+    private NavigationHeaderManager headerManager;
 
     private CardView coursesBtn;
     @SuppressLint("MissingInflatedId")
@@ -54,6 +56,7 @@ public class TeacherDashboard extends AppCompatActivity {
         });
 
         sessionManager = new SessionManager(this);
+        headerManager = new NavigationHeaderManager(sessionManager);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         DrawerLayout drawerLayout = findViewById(R.id.main);
@@ -108,6 +111,9 @@ public class TeacherDashboard extends AppCompatActivity {
             return false;
         });
 
+        // Load user data into navigation header
+        loadNavigationHeader(navigationView);
+
         // Setup dashboard card click listeners
         setupDashboardCards();
         
@@ -131,8 +137,10 @@ public class TeacherDashboard extends AppCompatActivity {
         
         // Refresh current date and day when returning to dashboard
         setCurrentDateAndDay();
-
-        // getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.green));
+        
+        // Refresh navigation header when returning to activity
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        loadNavigationHeader(navigationView);
     }
 
 
@@ -316,4 +324,17 @@ public class TeacherDashboard extends AppCompatActivity {
             }
         });
     }
+    
+    private void loadNavigationHeader(NavigationView navigationView) {
+        android.view.View headerView = navigationView.getHeaderView(0);
+        ImageView profilePicture = headerView.findViewById(R.id.navProfilePicture);
+        TextView userName = headerView.findViewById(R.id.navUserName);
+        TextView userEmail = headerView.findViewById(R.id.navUserEmail);
+        
+        if (profilePicture != null && userName != null && userEmail != null) {
+            headerManager.loadUserData(profilePicture, userName, userEmail);
+        }
+    }
+    
+    
 }

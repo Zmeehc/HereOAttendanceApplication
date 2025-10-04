@@ -6,11 +6,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.llavore.hereoattendance.R;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +34,10 @@ public class CourseDetails extends AppCompatActivity {
     private TextView dateTextDetail, dayTextDetail;
     private ImageView backArrow;
     private Timer dateUpdateTimer;
+    private MaterialButton btnSetAttendance;
+    private DatabaseReference mDatabase;
+    private String courseId;
+    private String courseCode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +50,22 @@ public class CourseDetails extends AppCompatActivity {
             return insets;
         });
 
+
+
+        // Initialize Firebase
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+        
         initializeViews();
         loadCourseData();
         setCurrentDate();
         setupBackButton();
         startDateUpdateTimer();
+        setupRealTimeStudentCountListener();
+
+        btnSetAttendance.setOnClickListener(v -> {
+            Intent intent = new Intent(CourseDetails.this, SetAttendanceActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void initializeViews() {
@@ -54,17 +77,19 @@ public class CourseDetails extends AppCompatActivity {
         dateTextDetail = findViewById(R.id.dateTextDetail);
         dayTextDetail = findViewById(R.id.dayTextDetail);
         backArrow = findViewById(R.id.backActiveCourseArrow);
+        btnSetAttendance = findViewById(R.id.setAttendanceBtnDetail);
     }
 
     private void loadCourseData() {
         Intent intent = getIntent();
         if (intent != null) {
+            courseId = intent.getStringExtra("courseId");
+            courseCode = intent.getStringExtra("courseCode");
             String courseName = intent.getStringExtra("courseName");
             String courseRoom = intent.getStringExtra("courseRoom");
             String courseSchedule = intent.getStringExtra("courseSchedule");
             String courseStartTime = intent.getStringExtra("courseStartTime");
             String courseEndTime = intent.getStringExtra("courseEndTime");
-            String courseCode = intent.getStringExtra("courseCode");
             int studentCount = intent.getIntExtra("courseStudentCount", 0);
             int sessionCount = intent.getIntExtra("courseSessionCount", 0);
 
@@ -83,10 +108,31 @@ public class CourseDetails extends AppCompatActivity {
                 classCodeDetail.setText(String.format("Code: %s", courseCode));
             }
 
-            // Set student and session counts
+            // Set initial student and session counts
             studentsTextDetail.setText(String.format("Students: %d", studentCount));
             sessionsTextDetail.setText(String.format("Sessions: %d", sessionCount));
         }
+    }
+    
+    private void setupRealTimeStudentCountListener() {
+        if (courseCode == null) return;
+        
+        // Listen for real-time updates to student count from global courses registry
+        mDatabase.child("courses").child(courseCode).child("studentCount").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Integer studentCount = snapshot.getValue(Integer.class);
+                if (studentCount != null) {
+                    studentsTextDetail.setText(String.format("Students: %d", studentCount));
+                    android.util.Log.d("CourseDetails", "Updated student count to: " + studentCount);
+                }
+            }
+            
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("CourseDetails", "Failed to listen to student count updates: " + error.getMessage());
+            }
+        });
     }
 
     private void setCurrentDate() {

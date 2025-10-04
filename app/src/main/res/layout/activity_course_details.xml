@@ -215,16 +215,29 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/setAttendanceBtnDetail"
-                android:layout_width="200dp"
+                android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:layout_marginTop="10dp"
                 android:text="Set Attendance"
                 android:textColor="@color/white"
-                android:textSize="17sp"
+                android:textSize="14sp"
                 android:fontFamily="@font/poppins_regular"
                 android:backgroundTint="@color/green"
                 app:cornerRadius="6dp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dateRowDetail" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/viewAttendanceBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:text="View Record"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:fontFamily="@font/poppins_regular"
+                android:backgroundTint="@color/green"
+                app:cornerRadius="6dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/dateRowDetail" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.model.User;
 import com.llavore.hereoattendance.utils.SessionManager;
+import com.llavore.hereoattendance.utils.NavigationHeaderManager;
 import com.bumptech.glide.Glide;
 
 public class TeacherProfileActivity extends AppCompatActivity {
@@ -36,9 +37,10 @@ public class TeacherProfileActivity extends AppCompatActivity {
     private SessionManager sessionManager;
     private DatabaseReference mDatabase;
     private DrawerLayout drawerLayout;
+    private NavigationHeaderManager headerManager;
 
     // UI elements for user data
-    private TextView emailValue, fullNameValue, genderValue, birthdateValue, idNumberValue, contactValue, passwordValue;
+    private TextView emailValue, fullNameValue, genderValue, birthdateValue, idNumberValue, contactValue;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -54,6 +56,7 @@ public class TeacherProfileActivity extends AppCompatActivity {
 
         // Initialize Firebase and session manager
         sessionManager = new SessionManager(this);
+        headerManager = new NavigationHeaderManager(sessionManager);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Initialize UI elements
@@ -67,6 +70,20 @@ public class TeacherProfileActivity extends AppCompatActivity {
 
         // Load user data
         loadUserData();
+        
+        // Load user data into navigation header
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        loadNavigationHeader(navigationView);
+    }
+    
+    private void loadNavigationHeader(NavigationView navigationView) {
+        ImageView profilePicture = navigationView.findViewById(R.id.navProfilePicture);
+        TextView userName = navigationView.findViewById(R.id.navUserName);
+        TextView userEmail = navigationView.findViewById(R.id.navUserEmail);
+        
+        if (profilePicture != null && userName != null && userEmail != null) {
+            headerManager.loadUserData(profilePicture, userName, userEmail);
+        }
     }
 
     private void initializeViews() {
@@ -76,7 +93,7 @@ public class TeacherProfileActivity extends AppCompatActivity {
         birthdateValue = findViewById(R.id.birthdateValue);
         idNumberValue = findViewById(R.id.idNumberValue);
         contactValue = findViewById(R.id.contactValue);
-        passwordValue = findViewById(R.id.passwordValue);
+        // password removed from UI
 
         // Initialize drawer layout and burger icon
         drawerLayout = findViewById(R.id.main);
@@ -212,7 +229,7 @@ public class TeacherProfileActivity extends AppCompatActivity {
             contactValue.setText("Not provided");
         }
 
-        passwordValue.setText("******78"); // Always show masked password
+        // password no longer displayed
 
         // Load profile image if available
         loadProfileImage(user.getProfileImageUrl());
@@ -294,6 +311,10 @@ public class TeacherProfileActivity extends AppCompatActivity {
         super.onResume();
         // Refresh user data when returning to profile
         loadUserData();
+        
+        // Refresh navigation header
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        loadNavigationHeader(navigationView);
     }
 
     @Override

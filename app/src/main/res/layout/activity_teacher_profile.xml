@@ -50,46 +50,48 @@
                 app:layout_constraintBottom_toBottomOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- Profile Picture Section -->
-        <androidx.cardview.widget.CardView
-            android:id="@+id/profilePictureCard"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_marginTop="40dp"
-            app:cardCornerRadius="60dp"
-            app:cardElevation="4dp"
-            app:cardBackgroundColor="@color/green"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <ImageView
-                android:id="@+id/profilePicture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/baseline_person_24"
-                android:contentDescription="Profile Picture"
-                android:scaleType="centerCrop"
-                android:padding="8dp" />
-
-        </androidx.cardview.widget.CardView>
-
-
-
-        <!-- User Information Section -->
+        <!-- User Information Section (including profile picture inside scroll) -->
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="0dp"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            app:layout_constraintTop_toBottomOf="@id/profilePictureCard"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:layout_constraintBottom_toBottomOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <!-- Profile Picture Section (scrolls with content) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="40dp"
+                    android:paddingBottom="10dp">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/profilePictureCard"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        app:cardCornerRadius="60dp"
+                        app:cardElevation="4dp"
+                        app:cardBackgroundColor="@color/green">
+
+                        <ImageView
+                            android:id="@+id/profilePicture"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:src="@drawable/baseline_person_24"
+                            android:contentDescription="Profile Picture"
+                            android:scaleType="centerCrop"
+                            android:padding="8dp" />
+
+                    </androidx.cardview.widget.CardView>
+                </LinearLayout>
 
                 <!-- Email Section -->
                 <LinearLayout
@@ -283,32 +285,7 @@
                     android:layout_height="1dp"
                     android:background="@color/light_gray" />
 
-                <!-- Password Section -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Password"
-                        android:textColor="@color/gray"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/poppins_medium" />
-
-                    <TextView
-                        android:id="@+id/passwordValue"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="******78"
-                        android:textColor="@color/green"
-                        android:textSize="16sp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:layout_marginTop="4dp" />
-
-                </LinearLayout>
+                <!-- Removed Password Section -->
 
             </LinearLayout>
 

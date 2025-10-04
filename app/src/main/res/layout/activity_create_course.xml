@@ -93,7 +93,7 @@
                     android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- First Name -->
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/scheduleField"
                 android:layout_width="0dp"
@@ -123,7 +123,6 @@
                     android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Middle Name -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/roomField"
                 android:layout_width="0dp"

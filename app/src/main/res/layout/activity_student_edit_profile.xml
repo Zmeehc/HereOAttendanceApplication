@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    tools:context=".student.StudentEditProfileActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:padding="16dp"
+        android:background="@color/green"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backLoginArrow"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/idSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Edit Profile"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@id/backLoginArrow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:paddingBottom="20dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp"
+            android:paddingBottom="40dp">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/profilePictureCard"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                app:cardCornerRadius="60dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/green">
+
+                <ImageView
+                    android:id="@+id/profilePicture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/baseline_person_24"
+                    android:contentDescription="Profile Picture"
+                    android:scaleType="centerCrop"
+                    android:padding="8dp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Fields similar to teacher edit profile, with EDP and program/year -->
+            <!-- For brevity, re-use same structure -->
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="30dp">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="EDP Number"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/edpEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="First Name"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/firstNameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="textPersonName" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Middle Name"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/middleNameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="textPersonName" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Last Name"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/lastNameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="textPersonName" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Email"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/emailEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="textEmailAddress" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Gender"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/genderEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="none" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/birthdateLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Birthdate"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/birthdateEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:clickable="true" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Program"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/programEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="text" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Year Level"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/yearLevelEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="number" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Contact Number"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/contactEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="phone"
+                        android:text="+63 " />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Parent/Guardian Name"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/guardianNameEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="textPersonName" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="Parent/Guardian Contact"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/guardianContactEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="phone"
+                        android:text="+63 " />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:hint="New Password (optional)"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/passwordEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="24dp"
+                    android:hint="Confirm Password"
+                    app:boxStrokeColor="@color/green"
+                    app:hintTextColor="@color/green"
+                    app:passwordToggleEnabled="true"
+                    app:passwordToggleTint="@color/green">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/confirmPasswordEdit"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_medium"
+                        android:inputType="textPassword" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/saveButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="Save"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textSize="16sp"
+                    android:backgroundTint="@color/green"
+                    app:cornerRadius="8dp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

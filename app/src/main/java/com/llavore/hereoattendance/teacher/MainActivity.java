@@ -12,10 +12,11 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.llavore.hereoattendance.R;
+import com.llavore.hereoattendance.student.StudentLogin;
 import com.llavore.hereoattendance.utils.SessionManager;
 
 public class MainActivity extends AppCompatActivity {
-    private CardView teacherButton;
+    private CardView teacherButton, studentButton;
     private SessionManager sessionManager;
 
 
@@ -46,6 +47,12 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+        });
+
+        studentButton = findViewById(R.id.studentBtn);
+        studentButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, StudentLogin.class);
+            startActivity(intent);
         });
 
         teacherButton = findViewById(R.id.teacherBtn);

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:fillViewport="true">
+
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@android:color/white"
+    tools:context=".student.StudentLoginActivity">
+
+    <ImageView
+        android:id="@+id/imageViewStudentLogo"
+        android:layout_width="109dp"
+        android:layout_height="109dp"
+        android:layout_marginTop="68dp"
+        android:layout_marginEnd="136dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.113"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/applogo" />
+
+    <TextView
+        android:id="@+id/studentWelcome1"
+        android:layout_width="188dp"
+        android:layout_height="29dp"
+        android:layout_marginStart="33dp"
+        android:layout_marginEnd="312dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Welcome Back"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.023"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewStudentLogo" />
+
+    <TextView
+        android:id="@+id/studentWelcome2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="311dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="to"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentWelcome1" />
+
+    <TextView
+        android:id="@+id/studentWelcomeHereO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="@font/poppins_bold"
+        android:text="HERE-O"
+        android:textColor="@color/green"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/studentWelcome2"
+        app:layout_constraintTop_toBottomOf="@+id/studentWelcome1" />
+
+    <TextView
+        android:id="@+id/studentWelcomeAttendance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:fontFamily="@font/poppins_semibold"
+        android:text="Attendance"
+        android:textSize="20sp"
+        app:layout_constraintStart_toEndOf="@+id/studentWelcomeHereO"
+        app:layout_constraintTop_toBottomOf="@+id/studentWelcome1" />
+
+    <TextView
+        android:id="@+id/studentHelloText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_regular"
+        android:text="Hello there! Log in as"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentWelcomeHereO" />
+
+    <TextView
+        android:id="@+id/studentRoleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="STUDENT"
+        android:textColor="@color/green"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/studentHelloText"
+        app:layout_constraintTop_toBottomOf="@+id/studentWelcomeAttendance" />
+
+    <TextView
+        android:id="@+id/studentContinueText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:fontFamily="@font/poppins_regular"
+        android:text="to continue"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentHelloText" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/studentLoginEmailField"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="25dp"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusBottomEnd="5dp"
+        app:boxCornerRadiusBottomStart="5dp"
+        app:boxCornerRadiusTopEnd="5dp"
+        app:boxCornerRadiusTopStart="5dp"
+        app:boxStrokeColor="@color/green"
+        app:hintTextColor="@color/custom_hint_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentContinueText">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/studentEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:hint="Enter Email"
+            android:inputType="textEmailAddress"
+            android:importantForAutofill="yes"
+            android:minHeight="48dp"
+            android:textCursorDrawable="@drawable/custom_cursor"
+            android:textSize="13sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/studentPasswordLayout"
+        android:layout_width="0dp"
+        android:layout_height="70dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        app:boxBackgroundMode="outline"
+        app:boxCornerRadiusBottomEnd="5dp"
+        app:boxCornerRadiusBottomStart="5dp"
+        app:boxCornerRadiusTopEnd="5dp"
+        app:boxCornerRadiusTopStart="5dp"
+        app:boxStrokeColor="@color/green"
+        app:endIconMode="password_toggle"
+        app:endIconTint="@color/green"
+        app:hintTextColor="@color/custom_hint_color"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentLoginEmailField">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/studentPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/poppins_medium"
+            android:hint="Enter Password"
+            android:inputType="textPassword"
+            android:textCursorDrawable="@drawable/custom_cursor"
+            android:textSize="13sp" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:id="@+id/studentSwitchText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Switch"
+        android:textSize="13sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentPasswordLayout" />
+
+    <TextView
+        android:id="@+id/studentRoleSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Roles"
+        android:textColor="@color/green"
+        android:textSize="13sp"
+        app:layout_constraintStart_toEndOf="@+id/studentSwitchText"
+        app:layout_constraintTop_toBottomOf="@+id/studentPasswordLayout" />
+
+    <TextView
+        android:id="@+id/studentForgotLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="25dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Password?"
+        android:textColor="@color/green"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/studentPasswordLayout" />
+
+    <TextView
+        android:id="@+id/studentForgot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="5dp"
+        android:text="Forgot"
+        android:textSize="13sp"
+        android:fontFamily="@font/poppins_medium"
+        app:layout_constraintEnd_toStartOf="@id/studentForgotLabel"
+        app:layout_constraintTop_toBottomOf="@id/studentPasswordLayout"/>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnStudentLogin"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:text="Login"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="18sp"
+        app:cornerRadius="10dp"
+        app:backgroundTint="@color/green"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/studentSwitchText"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="25dp"
+        android:layout_marginTop="10dp"/>
+
+    <TextView
+        android:id="@+id/studentNoAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="76dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="2dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Don't have an account?"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toStartOf="@+id/studentSignUp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnStudentLogin" />
+
+    <TextView
+        android:id="@+id/studentSignUp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="91dp"
+        android:fontFamily="@font/poppins_medium"
+        android:text="Sign up here."
+        android:textColor="@color/green"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/studentNoAccount"
+        app:layout_constraintTop_toBottomOf="@+id/btnStudentLogin" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fitsSystemWindows="true"
+    tools:context=".teacher.SetAttendanceActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:padding="16dp"
+        android:background="@color/green"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backToCourseDetails"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/idSignup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Set Attendance"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@id/backToCourseDetails"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/courseCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/green2"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp"
+                app:strokeWidth="2dp">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cardviewDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="15dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="15dp"
+                    android:paddingBottom="16dp"
+                    tools:ignore="ExtraText">
+
+
+                    <TextView
+                        android:id="@+id/courseTitleDetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/poppins_semibold"
+                        android:text="Subject Name | Room"
+                        android:textColor="@color/green"
+                        android:textSize="18sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/courseScheduleDetail"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:fontFamily="@font/poppins_regular"
+                        android:text="Time start - Time End | Day"
+                        android:textColor="@color/black"
+                        android:textSize="15sp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/courseTitleDetail" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:id="@+id/dateNDayTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Month Day, Year | Day"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:textSize="20sp"
+                android:fontFamily="@font/poppins_semibold"
+                />
+
+            <!-- Session Name Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/sessionNameField"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/sessionNameTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Session Name"
+                    android:inputType="text"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Class Start Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/classStartField"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/classStartTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Class start"
+                    android:inputType="none"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Class End Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/classEndField"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/classEndTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Class end"
+                    android:inputType="none"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Late Attendance Field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/lateAttField"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="25dp"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusTopStart="5dp"
+                app:boxCornerRadiusTopEnd="5dp"
+                app:boxCornerRadiusBottomStart="5dp"
+                app:boxCornerRadiusBottomEnd="5dp"
+                app:boxStrokeColor="@color/green"
+                app:hintTextColor="@color/custom_hint_color">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/lateAttTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/poppins_medium"
+                    android:hint="Late attendance"
+                    android:inputType="none"
+                    android:minHeight="48dp"
+                    android:textCursorDrawable="@drawable/custom_cursor"
+                    android:textSize="13sp" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Save Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveSetAttendance"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginStart="25dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginBottom="20dp"
+                android:text="Save"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_semibold"
+                android:textSize="18sp"
+                app:cornerRadius="10dp"
+                app:backgroundTint="@color/green" />
+
+            
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

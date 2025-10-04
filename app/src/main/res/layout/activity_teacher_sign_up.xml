@@ -358,7 +358,7 @@
                 android:id="@+id/confirmPassField"
                 android:layout_width="0dp"
                 android:layout_height="70dp"
-                android:layout_marginTop="100dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginHorizontal="25dp"
                 app:boxBackgroundMode="outline"
                 app:endIconMode="password_toggle"

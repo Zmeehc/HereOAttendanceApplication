@@ -188,8 +188,11 @@ public class CreateCourseActivity extends AppCompatActivity {
         c.endTime = textOf(classEndTxt);
         c.lateAfter = textOf(lateAttTxt);
         c.code = textOf(courseCodeTxt);
+        c.teacherId = uid; // Set the teacher ID
         c.studentCount = 0;
         c.sessionCount = 0;
+        
+        android.util.Log.d("CourseCreation", "Creating course: " + c.name + " with teacherId: " + c.teacherId + " and code: " + c.code);
 
         // Save to the current logged-in user's courses
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child("teachers").child(uid).child("courses");
@@ -202,16 +205,32 @@ public class CreateCourseActivity extends AppCompatActivity {
         // Set the course ID for reference
         c.id = key;
         
+        // Save to the teacher's courses first
         ref.child(key).setValue(c).addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Toast.makeText(this, "Course created successfully!", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(this, ActiveCoursesActivity.class));
-                finish();
+                // Also save to global courses reference immediately
+                DatabaseReference globalCoursesRef = FirebaseDatabase.getInstance().getReference("courses");
+                globalCoursesRef.child(c.code).setValue(c).addOnCompleteListener(globalTask -> {
+                    if (globalTask.isSuccessful()) {
+                        Toast.makeText(this, "Course created successfully!", Toast.LENGTH_SHORT).show();
+                        startActivity(new Intent(this, ActiveCoursesActivity.class));
+                        finish();
+                    } else {
+                        // Log the error but don't fail the course creation
+                        if (globalTask.getException() != null) {
+                            android.util.Log.e("CourseCreation", "Global registration failed: " + globalTask.getException().getMessage());
+                        }
+                        Toast.makeText(this, "Course created successfully! (Global registry unavailable - students can still enroll)", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(this, ActiveCoursesActivity.class));
+                        finish();
+                    }
+                });
             } else {
                 Toast.makeText(this, "Failed to create course: " + task.getException().getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
+    
 
     private boolean validateFields() {
         String courseName = textOf(findViewById(R.id.txtCourseName));

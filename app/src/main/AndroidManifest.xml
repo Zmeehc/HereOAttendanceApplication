@@ -26,6 +26,33 @@
         android:theme="@style/Theme.HereOAttendance"
         tools:targetApi="31">
         <activity
+            android:name=".student.StudentEditProfile"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentAccount"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentHome"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentSignup"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentLogin"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentEditProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".teacher.AttendanceRecord"
+            android:exported="false" />
+        <activity
+            android:name=".teacher.SetAttendanceActivity"
+            android:exported="false" />
+        <activity
             android:name=".GoogleMapsActivity"
             android:exported="false" />
         <activity
