@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_marginTop="8dp">
+
+    <!-- Course name -->
+    <TextView
+        android:id="@+id/courseNameText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Course Name"
+        android:textColor="@color/green"
+        android:textSize="16sp"
+        android:fontFamily="@font/poppins_semibold"
+        android:textStyle="bold" />
+
+    <!-- Course schedule -->
+    <TextView
+        android:id="@+id/courseScheduleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="8:30 AM - 10:00 AM | T-TH"
+        android:textColor="@color/gray"
+        android:textSize="12sp"
+        android:fontFamily="@font/poppins_medium"
+        android:layout_marginTop="2dp" />
+
+</LinearLayout>

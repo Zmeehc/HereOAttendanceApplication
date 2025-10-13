@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".PrivacyPolicyActivity">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/green"
+        android:elevation="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Privacy Policy"
+        app:titleTextColor="@color/white">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="16dp"
+            android:src="@drawable/baseline_arrow_back_24"
+            android:tint="@color/white" />
+
+    </androidx.appcompat.widget.Toolbar>
+
+    <!-- Scrollable Content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Header -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:gravity="center"
+                android:text="Privacy Policy"
+                android:textColor="@color/green"
+                android:textSize="24sp"
+                android:layout_marginBottom="16dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:gravity="center"
+                android:text="Last updated: December 2024"
+                android:textColor="@color/gray"
+                android:textSize="14sp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Introduction -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="At HereO Attendance, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our attendance management application."
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Information We Collect -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="1. Information We Collect"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="Personal Information:\n• Name, email address, and contact information\n• Student ID numbers and academic information\n• Profile pictures and identification documents\n• Course enrollment and academic records\n\nUsage Information:\n• Attendance records and timestamps\n• App usage patterns and preferences\n• Device information and technical data\n• Location data (when required for attendance verification)"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- How We Use Information -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="2. How We Use Your Information"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="We use your information to:\n• Provide attendance tracking and management services\n• Generate reports and analytics for educational purposes\n• Send notifications about attendance and academic matters\n• Maintain academic records and compliance requirements\n• Improve our services and user experience\n• Ensure security and prevent unauthorized access\n• Communicate important updates and announcements"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Information Sharing -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="3. Information Sharing and Disclosure"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="We do not sell, trade, or rent your personal information to third parties. We may share your information only in the following circumstances:\n\n• With educational institutions for academic purposes\n• With authorized personnel (teachers, administrators)\n• When required by law or legal process\n• To protect our rights and prevent fraud\n• With service providers who assist in app operations\n• In case of emergency or safety concerns"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Data Security -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="4. Data Security"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="We implement comprehensive security measures to protect your information:\n\n• End-to-end encryption for data transmission\n• Secure cloud storage with regular backups\n• Access controls and authentication systems\n• Regular security audits and updates\n• Employee training on data protection\n• Incident response procedures"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Your Rights -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="5. Your Rights and Choices"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="You have the right to:\n• Access and review your personal information\n• Request corrections to inaccurate data\n• Delete your account and associated data\n• Opt-out of non-essential communications\n• Request data portability\n• Withdraw consent for data processing\n• File complaints about data handling"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Data Retention -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="6. Data Retention"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="We retain your information for as long as necessary to provide our services and comply with legal obligations. Academic records may be retained for extended periods as required by educational regulations. When data is no longer needed, we securely delete or anonymize it."
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Children's Privacy -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="7. Children's Privacy"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="Our service is designed for educational use and may collect information from students under 18. We comply with applicable children's privacy laws and obtain appropriate consent from parents or guardians when required. We do not knowingly collect personal information from children without proper authorization."
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Changes to Policy -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="8. Changes to This Privacy Policy"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="We may update this Privacy Policy from time to time. We will notify you of any material changes through the app or via email. Your continued use of the service after changes become effective constitutes acceptance of the updated policy."
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Contact Information -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_bold"
+                android:text="9. Contact Us"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins_regular"
+                android:text="If you have any questions about this Privacy Policy or our data practices, please contact us at:\n\nEmail: christianllavore528@gmail.com\nPhone: (+63) 966 399 6287\nAddress: Zone 4, Barangay Tiguma, Pagadian City 7016, Zamboanga del Sur"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="24dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

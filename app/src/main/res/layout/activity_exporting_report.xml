@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context=".teacher.ExportingReportActivity">
+
+    <!-- App Header (Top Green Bar) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        android:padding="16dp"
+        android:background="@color/green"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/back_arrow"
+            android:contentDescription="Back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <TextView
+            android:id="@+id/exportingReportTxt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/poppins_semibold"
+            android:text="Exporting Report"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@id/backArrow"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- Loading Layout -->
+    <include
+        android:id="@+id/loadingLayout"
+        layout="@layout/loaderlayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Attendance Table Container (Scrollable as one unit) -->
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/tableScrollView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- File Export Section (Light Green Card) - Fixed width -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/fileExportCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:backgroundTint="@color/light_green"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="4dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- File Name Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <!-- Excel Icon -->
+                            <ImageView
+                                android:id="@+id/excelIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/excel"
+                                android:contentDescription="Excel file" />
+
+                            <!-- File Name -->
+                            <TextView
+                                android:id="@+id/fileNameTxt"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:fontFamily="@font/poppins_medium"
+                                android:text="File name: 5-13-25.xlsx"
+                                android:textColor="@color/black"
+                                android:textSize="16sp" />
+
+                            <!-- Options Menu (3 dots) -->
+                            <ImageView
+                                android:id="@+id/optionsMenu"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@drawable/baseline_more_vert_24"
+                                android:contentDescription="Options"
+                                android:padding="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Date Range Row -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="12dp">
+
+                            <!-- Date Range -->
+                            <TextView
+                                android:id="@+id/dateRangeTxt"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:fontFamily="@font/poppins_regular"
+                                android:text="May 13, 2025 - Jun. 10, 2025"
+                                android:textColor="@color/black"
+                                android:textSize="14sp" />
+
+                            <!-- Date Range Dropdown -->
+                            <ImageView
+                                android:id="@+id/dateRangeDropdown"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/drop_down_green"
+                                android:contentDescription="Date range dropdown" />
+
+                            <!-- Export Button -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/exportBtn"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="16dp"
+                                android:text="Export"
+                                android:textColor="@color/white"
+                                android:fontFamily="@font/poppins_medium"
+                                android:backgroundTint="@color/green"
+                                app:cornerRadius="8dp"
+                                app:icon="@drawable/baseline_check_24"
+                                app:iconTint="@color/white"
+                                app:iconGravity="textStart"
+                                app:iconPadding="4dp" />
+
+                        </LinearLayout>
+
+                        <!-- Progress Bar Section -->
+                        <LinearLayout
+                            android:id="@+id/progressSection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginTop="12dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/progressText"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Exporting attendance data..."
+                                android:fontFamily="@font/poppins_regular"
+                                android:textColor="@color/black"
+                                android:textSize="12sp" />
+
+                            <ProgressBar
+                                android:id="@+id/exportProgressBar"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:progressTint="@color/green"
+                                android:max="100"
+                                android:progress="0" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            <!-- Table Section (Horizontally Scrollable) -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <!-- Table Header (Fixed Green Bar) -->
+                    <LinearLayout
+                        android:id="@+id/tableHeader"
+                        android:layout_width="wrap_content"
+                        android:layout_height="60dp"
+                        android:orientation="horizontal"
+                        android:background="@color/green"
+                        android:gravity="center_vertical">
+
+                        <!-- Student Column Header -->
+                        <TextView
+                            android:id="@+id/studentHeader"
+                            android:layout_width="200dp"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_semibold"
+                            android:text="Student"
+                            android:textColor="@color/white"
+                            android:textSize="16sp"
+                            android:gravity="center"
+                            android:background="@color/green"
+                            android:padding="8dp" />
+
+                        <!-- Date Headers Container (will be populated dynamically) -->
+                        <LinearLayout
+                            android:id="@+id/dateHeadersContainer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal" />
+
+                    </LinearLayout>
+
+                    <!-- Students List Container -->
+                    <LinearLayout
+                        android:id="@+id/studentsContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
