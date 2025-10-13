@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.material.button.MaterialButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -26,6 +27,7 @@ import com.llavore.hereoattendance.model.User;
 import com.llavore.hereoattendance.teacher.MainActivity;
 import com.llavore.hereoattendance.utils.SessionManager;
 import com.llavore.hereoattendance.utils.NavigationHeaderManager;
+import com.llavore.hereoattendance.utils.StudentNavigationManager;
 
 public class StudentProfileActivity extends AppCompatActivity {
 
@@ -33,9 +35,11 @@ public class StudentProfileActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DrawerLayout drawerLayout;
     private NavigationHeaderManager headerManager;
+    private StudentNavigationManager navigationManager;
 
     private TextView edpValue, emailValue, fullNameValue, genderValue, birthdateValue,
             contactValue, programYearValue, guardianNameValue, guardianContactValue;
+    private MaterialButton qrCodeButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,32 +54,15 @@ public class StudentProfileActivity extends AppCompatActivity {
 
         sessionManager = new SessionManager(this);
         headerManager = new NavigationHeaderManager(sessionManager);
+        navigationManager = new StudentNavigationManager(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         drawerLayout = findViewById(R.id.main);
         ImageView burgerIcon = findViewById(R.id.burgerIcon);
-        burgerIcon.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
         NavigationView navigationView = findViewById(R.id.navigationView);
-        navigationView.setCheckedItem(R.id.nav_account);
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-            if (id == R.id.nav_logout) {
-                sessionManager.logout();
-                Intent intent = new Intent(StudentProfileActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (id == R.id.nav_home) {
-                startActivity(new Intent(StudentProfileActivity.this, StudentHome.class));
-                drawerLayout.closeDrawers();
-                return true;
-            } else {
-                drawerLayout.closeDrawers();
-                return true;
-            }
-        });
+        
+        // Setup navigation using the common manager
+        navigationManager.setupNavigationDrawer(drawerLayout, burgerIcon, navigationView, "account");
 
         // Setup profile picture click listener to open edit profile
         ImageView profilePicture = findViewById(R.id.profilePicture);
@@ -96,30 +83,15 @@ public class StudentProfileActivity extends AppCompatActivity {
         bindViews();
         loadData();
         
-        // Load user data into navigation header
-        loadNavigationHeader(navigationView);
+        // Navigation header is now handled by the navigation manager
     }
     
-    private void loadNavigationHeader(NavigationView navigationView) {
-        android.view.View headerView = navigationView.getHeaderView(0);
-        ImageView profilePicture = headerView.findViewById(R.id.navProfilePicture);
-        TextView userName = headerView.findViewById(R.id.navUserName);
-        TextView userEmail = headerView.findViewById(R.id.navUserEmail);
-        
-        if (profilePicture != null && userName != null && userEmail != null) {
-            headerManager.loadUserData(profilePicture, userName, userEmail);
-        }
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
         // Refresh user data when returning to profile
         loadData();
-        
-        // Refresh navigation header
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        loadNavigationHeader(navigationView);
     }
 
     @Override
@@ -141,6 +113,13 @@ public class StudentProfileActivity extends AppCompatActivity {
         programYearValue = findViewById(R.id.programYearValue);
         guardianNameValue = findViewById(R.id.guardianNameValue);
         guardianContactValue = findViewById(R.id.guardianContactValue);
+        qrCodeButton = findViewById(R.id.qrCodeButton);
+        
+        // Setup QR Code button click listener
+        qrCodeButton.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentProfileActivity.this, StudentQRCodeActivity.class);
+            startActivity(intent);
+        });
     }
 
     private void loadData() {
@@ -238,10 +217,22 @@ public class StudentProfileActivity extends AppCompatActivity {
             return "Not provided";
         }
 
+        android.util.Log.d("ContactFormat", "Original contact number: '" + contactNumber + "'");
+
         // Remove all non-digit characters except +
         String cleanNumber = contactNumber.replaceAll("[^+\\d]", "");
+        android.util.Log.d("ContactFormat", "After removing non-digits: '" + cleanNumber + "'");
 
-        // Remove +63 prefix if present
+        // Handle multiple +63 prefixes (like "+63+63" or "+63 +63")
+        while (cleanNumber.startsWith("+63+63") || cleanNumber.startsWith("+63+")) {
+            if (cleanNumber.startsWith("+63+63")) {
+                cleanNumber = cleanNumber.substring(6); // Remove "+63+63"
+            } else if (cleanNumber.startsWith("+63+")) {
+                cleanNumber = cleanNumber.substring(4); // Remove "+63+"
+            }
+        }
+
+        // Remove single +63 prefix if present
         if (cleanNumber.startsWith("+63")) {
             cleanNumber = cleanNumber.substring(3);
         } else if (cleanNumber.startsWith("63")) {
@@ -251,40 +242,52 @@ public class StudentProfileActivity extends AppCompatActivity {
         // Remove leading zeros if any
         cleanNumber = cleanNumber.replaceFirst("^0+", "");
 
+        android.util.Log.d("ContactFormat", "After cleaning: '" + cleanNumber + "'");
+
         // Format as +63 000 000 0000 (3-3-4 format)
         if (cleanNumber.length() == 10) {
-            return String.format("+63 %s %s %s",
+            String formatted = String.format("+63 %s %s %s",
                     cleanNumber.substring(0, 3),
                     cleanNumber.substring(3, 6),
                     cleanNumber.substring(6, 10));
+            android.util.Log.d("ContactFormat", "Final formatted: '" + formatted + "'");
+            return formatted;
         } else if (cleanNumber.length() == 9) {
             // Handle case where leading 9 might be missing (old format)
-            return String.format("+63 9%s %s %s",
+            String formatted = String.format("+63 9%s %s %s",
                     cleanNumber.substring(0, 2),
                     cleanNumber.substring(2, 5),
                     cleanNumber.substring(5, 9));
+            android.util.Log.d("ContactFormat", "Final formatted (9 digits): '" + formatted + "'");
+            return formatted;
         } else if (cleanNumber.length() >= 7) {
             // For other lengths, try to format as best as possible
             if (cleanNumber.length() >= 10) {
                 // Take only first 10 digits
                 cleanNumber = cleanNumber.substring(0, 10);
-                return String.format("+63 %s %s %s",
+                String formatted = String.format("+63 %s %s %s",
                         cleanNumber.substring(0, 3),
                         cleanNumber.substring(3, 6),
                         cleanNumber.substring(6, 10));
+                android.util.Log.d("ContactFormat", "Final formatted (>=10): '" + formatted + "'");
+                return formatted;
             } else {
                 // Pad with zeros if too short
                 while (cleanNumber.length() < 10) {
                     cleanNumber = cleanNumber + "0";
                 }
-                return String.format("+63 %s %s %s",
+                String formatted = String.format("+63 %s %s %s",
                         cleanNumber.substring(0, 3),
                         cleanNumber.substring(3, 6),
                         cleanNumber.substring(6, 10));
+                android.util.Log.d("ContactFormat", "Final formatted (padded): '" + formatted + "'");
+                return formatted;
             }
         } else {
             // If number is too short, return as is with +63 prefix
-            return "+63 " + cleanNumber;
+            String formatted = "+63 " + cleanNumber;
+            android.util.Log.d("ContactFormat", "Final formatted (short): '" + formatted + "'");
+            return formatted;
         }
     }
 }

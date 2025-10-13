@@ -5,11 +5,14 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.MANAGE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <uses-feature
         android:name="android.hardware.camera"
@@ -25,6 +28,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HereOAttendance"
         tools:targetApi="31">
+        <activity
+            android:name=".teacher.AdminDashboard"
+            android:exported="false" />
         <activity
             android:name=".student.StudentEditProfile"
             android:exported="false" />
@@ -47,7 +53,28 @@
             android:name=".student.StudentEditProfileActivity"
             android:exported="false" />
         <activity
+            android:name=".student.StudentQRCodeActivity"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentCourseDetails"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentNotificationsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".student.StudentSettingsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".teacher.QRScannerActivity"
+            android:exported="false" />
+        <activity
             android:name=".teacher.AttendanceRecord"
+            android:exported="false" />
+        <activity
+            android:name=".teacher.AttendanceRecordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".teacher.ExportingReportActivity"
             android:exported="false" />
         <activity
             android:name=".teacher.SetAttendanceActivity"
@@ -89,6 +116,12 @@
             android:name=".teacher.ActiveCoursesActivity"
             android:exported="false" />
         <activity
+            android:name=".teacher.ArchiveCoursesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".teacher.SavedExportsActivity"
+            android:exported="false" />
+        <activity
             android:name=".teacher.TeacherProfileActivity"
             android:exported="false" />
         <activity
@@ -116,6 +149,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".TermsConditionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AboutActivity"
+            android:exported="false" />
+        <activity
+            android:name=".PrivacyPolicyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".HelpSupportActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

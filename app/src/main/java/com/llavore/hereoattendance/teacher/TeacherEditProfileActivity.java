@@ -122,9 +122,9 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_teacher_edit_profile);
 
         try {
-            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.toolbar), (v, insets) -> {
                 Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom);
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
                 return insets;
             });
         } catch (Exception e) {
@@ -525,10 +525,31 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
             updatedUser.setProfileImageUrl(currentUser.getProfileImageUrl());
         }
 
-        // Save to database
-        mDatabase.child("users").child("teachers").child(userId).setValue(updatedUser)
+        // Save to database using updateChildren to preserve existing data like courses
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        updates.put("idNumber", updatedUser.getIdNumber());
+        updates.put("firstName", updatedUser.getFirstName());
+        updates.put("middleName", updatedUser.getMiddleName());
+        updates.put("lastName", updatedUser.getLastName());
+        updates.put("email", updatedUser.getEmail());
+        updates.put("gender", updatedUser.getGender());
+        updates.put("birthdate", updatedUser.getBirthdate());
+        updates.put("contactNumber", updatedUser.getContactNumber());
+        updates.put("program", updatedUser.getProgram());
+        updates.put("userType", updatedUser.getUserType());
+        updates.put("createdAt", updatedUser.getCreatedAt());
+        
+        // Only update profileImageUrl if we have a new one
+        if (currentUser != null && currentUser.getProfileImageUrl() != null && selectedImageBitmap == null) {
+            updates.put("profileImageUrl", currentUser.getProfileImageUrl());
+        }
+        
+        android.util.Log.d("TeacherEditProfile", "Updating teacher profile with updates: " + updates);
+        
+        mDatabase.child("users").child("teachers").child(userId).updateChildren(updates)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        android.util.Log.d("TeacherEditProfile", "Profile updated successfully, preserving courses");
                         // If there's a new image, upload it
                         if (selectedImageBitmap != null) {
                             uploadProfileImage(userId);
@@ -537,6 +558,7 @@ public class TeacherEditProfileActivity extends AppCompatActivity {
                             updatePasswordIfNeeded();
                         }
                     } else {
+                        android.util.Log.e("TeacherEditProfile", "Failed to update profile: " + task.getException());
                         saveButton.setEnabled(true);
                         saveButton.setText("Save");
                         Toast.makeText(this, "Failed to save data", Toast.LENGTH_SHORT).show();

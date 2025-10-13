@@ -38,6 +38,13 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
                 return;
+            } else if ("student".equals(userType)) {
+                // User is logged in as student, go directly to student home
+                Intent intent = new Intent(MainActivity.this, com.llavore.hereoattendance.student.StudentHome.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+                finish();
+                return;
             }
         }
         

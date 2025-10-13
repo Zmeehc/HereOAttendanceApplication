@@ -33,6 +33,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.llavore.hereoattendance.R;
+import com.llavore.hereoattendance.TermsConditionsActivity;
+import com.llavore.hereoattendance.utils.TransitionManager;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -408,10 +410,9 @@ public class TeacherSignUpActivity extends AppCompatActivity {
         ClickableSpan clickableSpan = new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-
-                Toast.makeText(TeacherSignUpActivity.this,
-                        "Terms and Conditions clicked", Toast.LENGTH_SHORT).show();
-
+                // Open Terms and Conditions activity
+                Intent intent = new Intent(TeacherSignUpActivity.this, TermsConditionsActivity.class);
+                startActivityForResult(intent, 1001);
             }
 
             @Override
@@ -425,5 +426,19 @@ public class TeacherSignUpActivity extends AppCompatActivity {
 
         termsText.setText(spannableString);
         termsText.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            // User agreed to terms and conditions
+            if (data != null && data.getBooleanExtra("terms_accepted", false)) {
+                // Automatically check the checkbox
+                checkBox.setChecked(true);
+                Toast.makeText(this, "Terms and Conditions accepted", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

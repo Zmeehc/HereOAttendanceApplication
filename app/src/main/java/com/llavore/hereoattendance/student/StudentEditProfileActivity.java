@@ -272,10 +272,13 @@ public class StudentEditProfileActivity extends AppCompatActivity {
         // Remove all non-digit characters except +
         String cleanNumber = contactNumber.replaceAll("[^+\\d]", "");
 
-        // Remove +63 prefix if present
+        // If it already has +63 prefix, return as is
         if (cleanNumber.startsWith("+63")) {
-            cleanNumber = cleanNumber.substring(3);
-        } else if (cleanNumber.startsWith("63")) {
+            return contactNumber; // Return original formatted number
+        }
+
+        // Remove 63 prefix if present (without +)
+        if (cleanNumber.startsWith("63")) {
             cleanNumber = cleanNumber.substring(2);
         }
 
@@ -323,21 +326,41 @@ public class StudentEditProfileActivity extends AppCompatActivity {
         updated.setProgram(programEdit.getText().toString().trim());
         updated.setUserType("student");
 
+        // Save to database using updateChildren to preserve existing data like enrolled courses
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        updates.put("firstName", updated.getFirstName());
+        updates.put("middleName", updated.getMiddleName());
+        updates.put("lastName", updated.getLastName());
+        updates.put("email", updated.getEmail());
+        updates.put("gender", updated.getGender());
+        updates.put("birthdate", updated.getBirthdate());
+        updates.put("contactNumber", updated.getContactNumber());
+        updates.put("program", updated.getProgram());
+        updates.put("userType", updated.getUserType());
+        updates.put("edpNumber", edpEdit.getText().toString().trim());
+        updates.put("yearLevel", yearLevelEdit.getText().toString().trim());
+        updates.put("guardianName", guardianNameEdit.getText().toString().trim());
+        updates.put("guardianContactNumber", guardianContactEdit.getText().toString().trim());
+        
+        // Preserve existing profile picture URL if no new image is selected
+        if (currentUser != null && currentUser.getProfileImageUrl() != null && selectedImageBitmap == null) {
+            updates.put("profileImageUrl", currentUser.getProfileImageUrl());
+        }
+        
+        android.util.Log.d("StudentEditProfile", "Updating student profile with updates: " + updates);
+        
         DatabaseReference ref = mDatabase.child("users").child("students").child(userId);
-        ref.setValue(updated).addOnCompleteListener(t -> {
-            if (t.isSuccessful()) {
-                // Save student-specific fields
-                ref.child("edpNumber").setValue(edpEdit.getText().toString().trim());
-                ref.child("yearLevel").setValue(yearLevelEdit.getText().toString().trim());
-                ref.child("guardianName").setValue(guardianNameEdit.getText().toString().trim());
-                ref.child("guardianContactNumber").setValue(guardianContactEdit.getText().toString().trim());
-
+        ref.updateChildren(updates).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                android.util.Log.d("StudentEditProfile", "Profile updated successfully, preserving enrolled courses");
+                
                 if (selectedImageBitmap != null) {
                     uploadProfileImage(userId, ref);
                 } else {
                     updatePasswordIfNeeded();
                 }
             } else {
+                android.util.Log.e("StudentEditProfile", "Failed to update profile: " + task.getException());
                 saveButton.setEnabled(true);
                 saveButton.setText("Save");
                 Toast.makeText(this, "Failed to save", Toast.LENGTH_SHORT).show();

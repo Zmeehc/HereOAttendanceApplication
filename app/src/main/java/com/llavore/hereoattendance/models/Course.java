@@ -4,6 +4,7 @@ public class Course {
     public String id;
     public String name;
     public String room;
+
     public String scheduleDays; // e.g., M-W-F
     public String startTime;    // e.g., 8:30 AM
     public String endTime;      // e.g., 10:00 AM

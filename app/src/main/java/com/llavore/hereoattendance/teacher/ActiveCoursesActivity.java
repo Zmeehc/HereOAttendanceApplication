@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -22,6 +23,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.adapters.CourseAdapter;
 import com.llavore.hereoattendance.models.Course;
+import com.llavore.hereoattendance.utils.TransitionManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,14 +57,12 @@ public class ActiveCoursesActivity extends AppCompatActivity {
         recyclerCourses.setAdapter(adapter);
 
         backToDashboardButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ActiveCoursesActivity.this, TeacherDashboard.class);
-            startActivity(intent);
+            TransitionManager.startActivityBackward(ActiveCoursesActivity.this, TeacherDashboard.class);
             finish();
         });
 
         addCourseButton.setOnClickListener(v -> {
-            Intent intent = new Intent(ActiveCoursesActivity.this, CreateCourseActivity.class);
-            startActivity(intent);
+            TransitionManager.startActivityForward(ActiveCoursesActivity.this, CreateCourseActivity.class);
         });
     }
 
@@ -70,34 +70,148 @@ public class ActiveCoursesActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // Refresh the course list when returning to this activity
+        android.util.Log.d("ActiveCourses", "onResume called, refreshing courses");
         loadCoursesForCurrentUser();
-
+        
+        // Also test database access
+        testDatabaseAccess();
+    }
+    
+    private void testDatabaseAccess() {
+        String uid = FirebaseAuth.getInstance().getCurrentUser() != null ?
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        if (uid == null) return;
+        
+        android.util.Log.d("ActiveCourses", "Testing database access for teacher: " + uid);
+        android.util.Log.d("ActiveCourses", "Database path: /users/teachers/" + uid + "/courses");
+        
+        // Test reading teacher profile
+        DatabaseReference teacherRef = FirebaseDatabase.getInstance().getReference("users").child("teachers").child(uid);
+        teacherRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                android.util.Log.d("ActiveCourses", "Teacher profile test - snapshot exists: " + snapshot.exists());
+                if (snapshot.exists()) {
+                    android.util.Log.d("ActiveCourses", "Teacher profile test - has children: " + snapshot.hasChildren());
+                    android.util.Log.d("ActiveCourses", "Teacher profile test - keys: " + snapshot.getKey());
+                    
+                    // List all children of teacher profile
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        android.util.Log.d("ActiveCourses", "Teacher profile child: " + child.getKey() + " = " + child.getValue());
+                    }
+                }
+            }
+            
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("ActiveCourses", "Teacher profile test failed:");
+                android.util.Log.e("ActiveCourses", "  - Error code: " + error.getCode());
+                android.util.Log.e("ActiveCourses", "  - Error message: " + error.getMessage());
+            }
+        });
+        
+        // Test reading courses
+        DatabaseReference coursesRef = FirebaseDatabase.getInstance().getReference("users").child("teachers").child(uid).child("courses");
+        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                android.util.Log.d("ActiveCourses", "Courses test - snapshot exists: " + snapshot.exists());
+                android.util.Log.d("ActiveCourses", "Courses test - children count: " + snapshot.getChildrenCount());
+                
+                if (snapshot.exists()) {
+                    // List all course children
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        android.util.Log.d("ActiveCourses", "Course child: " + child.getKey() + " = " + child.getValue());
+                    }
+                }
+            }
+            
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("ActiveCourses", "Courses test failed:");
+                android.util.Log.e("ActiveCourses", "  - Error code: " + error.getCode());
+                android.util.Log.e("ActiveCourses", "  - Error message: " + error.getMessage());
+            }
+        });
+        
+        // Also test the global courses registry
+        DatabaseReference globalCoursesRef = FirebaseDatabase.getInstance().getReference("courses");
+        globalCoursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                android.util.Log.d("ActiveCourses", "Global courses test - snapshot exists: " + snapshot.exists());
+                android.util.Log.d("ActiveCourses", "Global courses test - children count: " + snapshot.getChildrenCount());
+                
+                if (snapshot.exists()) {
+                    // List all global course children
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        android.util.Log.d("ActiveCourses", "Global course: " + child.getKey() + " = " + child.getValue());
+                    }
+                }
+            }
+            
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("ActiveCourses", "Global courses test failed:");
+                android.util.Log.e("ActiveCourses", "  - Error code: " + error.getCode());
+                android.util.Log.e("ActiveCourses", "  - Error message: " + error.getMessage());
+            }
+        });
     }
 
     private void loadCoursesForCurrentUser() {
         String uid = FirebaseAuth.getInstance().getCurrentUser() != null ?
                 FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
-        if (uid == null) return;
+        if (uid == null) {
+            android.util.Log.e("ActiveCourses", "User ID is null, cannot load courses");
+            return;
+        }
 
+        android.util.Log.d("ActiveCourses", "Loading courses for teacher: " + uid);
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child("teachers").child(uid).child("courses");
+        
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
+                android.util.Log.d("ActiveCourses", "Data changed, snapshot exists: " + snapshot.exists());
+                android.util.Log.d("ActiveCourses", "Snapshot children count: " + snapshot.getChildrenCount());
+                
                 courses.clear();
+                
+                if (!snapshot.exists() || snapshot.getChildrenCount() == 0) {
+                    android.util.Log.d("ActiveCourses", "No courses found or snapshot doesn't exist");
+                    adapter.notifyDataSetChanged();
+                    emptyStateText.setVisibility(View.VISIBLE);
+                    return;
+                }
+                
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Course course = child.getValue(Course.class);
                     if (course != null) {
                         course.id = child.getKey();
                         courses.add(course);
+                        android.util.Log.d("ActiveCourses", "Loaded course: " + course.name + " (ID: " + course.id + ")");
+                    } else {
+                        android.util.Log.e("ActiveCourses", "Failed to parse course from snapshot: " + child.getKey());
                     }
                 }
+                
+                android.util.Log.d("ActiveCourses", "Total courses loaded: " + courses.size());
                 adapter.notifyDataSetChanged();
                 emptyStateText.setVisibility(courses.isEmpty() ? View.VISIBLE : View.GONE);
             }
 
             @Override
             public void onCancelled(DatabaseError error) {
-                // no-op for now
+                android.util.Log.e("ActiveCourses", "Failed to load courses:");
+                android.util.Log.e("ActiveCourses", "  - Error code: " + error.getCode());
+                android.util.Log.e("ActiveCourses", "  - Error message: " + error.getMessage());
+                android.util.Log.e("ActiveCourses", "  - Error details: " + error.getDetails());
+                
+                // Show empty state on error
+                courses.clear();
+                adapter.notifyDataSetChanged();
+                emptyStateText.setVisibility(View.VISIBLE);
             }
         });
     }

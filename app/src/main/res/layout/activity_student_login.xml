@@ -203,30 +203,6 @@
         app:layout_constraintStart_toEndOf="@+id/studentSwitchText"
         app:layout_constraintTop_toBottomOf="@+id/studentPasswordLayout" />
 
-    <TextView
-        android:id="@+id/studentForgotLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="25dp"
-        android:fontFamily="@font/poppins_medium"
-        android:text="Password?"
-        android:textColor="@color/green"
-        android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/studentPasswordLayout" />
-
-    <TextView
-        android:id="@+id/studentForgot"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="5dp"
-        android:text="Forgot"
-        android:textSize="13sp"
-        android:fontFamily="@font/poppins_medium"
-        app:layout_constraintEnd_toStartOf="@id/studentForgotLabel"
-        app:layout_constraintTop_toBottomOf="@id/studentPasswordLayout"/>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnStudentLogin"

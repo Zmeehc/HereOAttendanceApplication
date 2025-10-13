@@ -58,8 +58,16 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- RecyclerView for absence alerts -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/absenceAlertsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
             <!-- No SMS Alerts Message -->
             <LinearLayout
+                android:id="@+id/noAlertsLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -74,6 +82,7 @@
                     android:layout_marginBottom="16dp" />
 
                 <TextView
+                    android:id="@+id/noAlertsText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="No SMS alerts yet"
@@ -83,6 +92,7 @@
                     android:layout_marginBottom="8dp" />
 
                 <TextView
+                    android:id="@+id/noAlertsSubtext"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="SMS alerts will appear here when sent"

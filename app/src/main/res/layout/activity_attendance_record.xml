@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:fitsSystemWindows="true"
-    tools:context=".teacher.AttendanceRecord">
+    tools:context=".teacher.AttendanceRecordActivity">
 
+    <!-- Header with back arrow and title -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
         android:layout_width="0dp"
@@ -21,7 +20,7 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <ImageView
-            android:id="@+id/backToCourseDetails"
+            android:id="@+id/backArrow"
             android:layout_width="34dp"
             android:layout_height="34dp"
             android:src="@drawable/back_arrow"
@@ -30,38 +29,49 @@
             app:layout_constraintBottom_toBottomOf="parent" />
 
         <TextView
-            android:id="@+id/idSignup"
+            android:id="@+id/attendanceRecordTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/poppins_semibold"
-            android:text="Set Attendance"
+            android:text="Attendance Record"
             android:textColor="@color/white"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@id/backToCourseDetails"
+            app:layout_constraintStart_toEndOf="@id/backArrow"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent" />
+
+        <ImageView
+            android:id="@+id/toolbarOptionsMenu"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@drawable/baseline_more_vert_24"
+            android:contentDescription="Options"
+            android:padding="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:fillViewport="true"
         app:layout_constraintTop_toBottomOf="@id/toolbar"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="20dp">
 
+            <!-- Course Details Card -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/courseCardView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
                 android:backgroundTint="@color/green2"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="4dp"
@@ -74,9 +84,7 @@
                     android:paddingStart="15dp"
                     android:paddingTop="10dp"
                     android:paddingEnd="15dp"
-                    android:paddingBottom="16dp"
-                    tools:ignore="ExtraText">
-
+                    android:paddingBottom="16dp">
 
                     <TextView
                         android:id="@+id/courseTitleDetail"
@@ -87,6 +95,7 @@
                         android:textColor="@color/green"
                         android:textSize="18sp"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <TextView
@@ -99,25 +108,196 @@
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/courseTitleDetail" />
 
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Date Selection -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="20dp">
+
+                <TextView
+                    android:id="@+id/dateTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="May 13, 2025"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" - "
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/dayTxt"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Tuesday"
+                    android:textSize="20sp"
+                    android:fontFamily="@font/poppins_semibold"
+                    android:textColor="@color/green" />
+
+                <ImageView
+                    android:id="@+id/dateDropdownIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="4dp"
+                    android:src="@drawable/drop_down_green"
+                    android:contentDescription="Date dropdown" />
+
+            </LinearLayout>
+
+            <!-- Status Icons Row -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp"
+                android:gravity="center">
+
+                <!-- Present -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/present_icon"
+                        android:contentDescription="Present" />
+
                     <TextView
-                        android:id="@+id/dateNDayTxt"
+                        android:id="@+id/presentCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/poppins_semibold"
-                        android:text="Month Day, Year | Day"
-                        android:textSize="18sp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/courseScheduleDetail" />
-                    />
+                        android:layout_marginStart="8dp"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/black" />
 
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+                <!-- Absent -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/absent_icon"
+                        android:contentDescription="Absent" />
+
+                    <TextView
+                        android:id="@+id/absentCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+                <!-- Excused -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginEnd="8dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/excused_icon"
+                        android:contentDescription="Excused" />
+
+                    <TextView
+                        android:id="@+id/excusedCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+                <!-- Late -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/late_icon"
+                        android:contentDescription="Late" />
+
+                    <TextView
+                        android:id="@+id/lateCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="0"
+                        android:textSize="16sp"
+                        android:fontFamily="@font/poppins_medium"
+                        android:textColor="@color/black" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- Excuse Students Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExcuseStudents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:text="Excuse Students"
+                android:textColor="@color/white"
+                android:fontFamily="@font/poppins_medium"
+                android:backgroundTint="@color/green"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/baseline_person_24"
+                app:iconTint="@color/white" />
+
+            <!-- Attendance Table -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/attendanceRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                tools:listitem="@layout/attendance_record_item" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-  </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

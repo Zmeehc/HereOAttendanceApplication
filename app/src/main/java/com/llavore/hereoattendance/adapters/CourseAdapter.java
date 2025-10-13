@@ -52,6 +52,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         
         // Set up real-time student count listener
         setupStudentCountListener(holder, c);
+        setupSessionCountListener(holder, c);
         
         // Set click listener to navigate to course details
         holder.itemView.setOnClickListener(v -> {
@@ -96,6 +97,38 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         });
     }
     
+    private void setupSessionCountListener(CourseViewHolder holder, Course course) {
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null ?
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        if (currentUserId == null || course.id == null || course.code == null) return;
+        
+        // Listen for real-time updates to the actual sessions node to count sessions dynamically
+        mDatabase.child("courses").child(course.code).child("sessions").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                // Count the actual number of sessions
+                int actualSessionCount = (int) snapshot.getChildrenCount();
+                holder.sessions.setText("Sessions: " + actualSessionCount);
+                android.util.Log.d("CourseAdapter", "Updated session count for course " + course.name + " to: " + actualSessionCount + " (from actual sessions)");
+                
+                // Also update the sessionCount field in the global registry to keep it in sync
+                mDatabase.child("courses").child(course.code).child("sessionCount").setValue(actualSessionCount)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                android.util.Log.d("CourseAdapter", "Updated global sessionCount field for course " + course.name + " to: " + actualSessionCount);
+                            } else {
+                                android.util.Log.e("CourseAdapter", "Failed to update global sessionCount field for course " + course.name + ": " + task.getException());
+                            }
+                        });
+            }
+            
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                android.util.Log.e("CourseAdapter", "Failed to listen to sessions updates for course " + course.name + ": " + error.getMessage());
+            }
+        });
+    }
+    
     private void showCourseOptionsMenu(View anchorView, Course course, int position) {
         PopupMenu popupMenu = new PopupMenu(context, anchorView);
         popupMenu.getMenuInflater().inflate(R.menu.course_options_menu, popupMenu.getMenu());
@@ -103,7 +136,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         popupMenu.setOnMenuItemClickListener(item -> {
             int itemId = item.getItemId();
             if (itemId == R.id.menu_archive) {
-                archiveCourse(course);
+                showArchiveConfirmation(course, position);
                 return true;
             } else if (itemId == R.id.menu_delete) {
                 showDeleteConfirmation(course, position);
@@ -115,15 +148,56 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         popupMenu.show();
     }
     
-    private void archiveCourse(Course course) {
-        // TODO: Implement archive functionality
-        Toast.makeText(context, "Archive functionality coming soon", Toast.LENGTH_SHORT).show();
+    private void showArchiveConfirmation(Course course, int position) {
+        new AlertDialog.Builder(context)
+                .setTitle("Archive Course")
+                .setMessage("Are you sure you want to archive this course? Archived courses can be viewed but attendance features will be disabled.")
+                .setPositiveButton("Archive", (dialog, which) -> archiveCourse(course, position))
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    
+    private void archiveCourse(Course course, int position) {
+        String currentUserId = FirebaseAuth.getInstance().getCurrentUser() != null ?
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        if (currentUserId == null) {
+            Toast.makeText(context, "User not logged in", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        
+        // Move course from active to archived
+        mDatabase.child("users").child("teachers").child(currentUserId).child("courses")
+                .child(course.id).removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    // Add to archived courses
+                    mDatabase.child("users").child("teachers").child(currentUserId).child("archivedCourses")
+                            .child(course.id).setValue(course)
+                            .addOnSuccessListener(aVoid1 -> {
+                                // Update course status in global courses
+                                mDatabase.child("courses").child(course.code).child("isArchived").setValue(true);
+                                
+                                // Remove from local list and notify adapter
+                                courses.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, courses.size());
+                                
+                                Toast.makeText(context, "Course archived successfully", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(context, "Failed to archive course", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Failed to archive course", Toast.LENGTH_SHORT).show();
+                });
     }
     
     private void showDeleteConfirmation(Course course, int position) {
         new AlertDialog.Builder(context)
                 .setTitle("Delete Course")
-                .setMessage("Are you sure you want to delete this course? This action cannot be undone and will remove all enrolled students.")
+                .setMessage("Are you sure you want to permanently delete this course? This action cannot be undone and will remove all course data including attendance records.")
                 .setPositiveButton("Delete", (dialog, which) -> deleteCourse(course, position))
                 .setNegativeButton("Cancel", null)
                 .show();
@@ -139,34 +213,27 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         
         DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         
-        // Remove from teacher's courses
+        // Remove course from teacher's active courses
         mDatabase.child("users").child("teachers").child(currentUserId).child("courses")
-                .child(course.id).removeValue();
-        
-        // Remove from global courses reference
-        mDatabase.child("courses").child(course.code).removeValue();
-        
-        // Remove from all enrolled students
-        mDatabase.child("users").child("students").addListenerForSingleValueEvent(new com.google.firebase.database.ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull com.google.firebase.database.DataSnapshot snapshot) {
-                for (com.google.firebase.database.DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                    studentSnapshot.child("enrolledCourses").child(course.id).getRef().removeValue();
-                }
-            }
-            
-            @Override
-            public void onCancelled(@NonNull com.google.firebase.database.DatabaseError error) {
-                // Handle error silently
-            }
-        });
-        
-        // Remove from local list and notify adapter
-        courses.remove(position);
-        notifyItemRemoved(position);
-        notifyItemRangeChanged(position, courses.size());
-        
-        Toast.makeText(context, "Course deleted successfully", Toast.LENGTH_SHORT).show();
+                .child(course.id).removeValue()
+                .addOnSuccessListener(aVoid -> {
+                    // Remove course from global courses registry
+                    mDatabase.child("courses").child(course.code).removeValue()
+                            .addOnSuccessListener(aVoid1 -> {
+                                // Remove from local list and notify adapter
+                                courses.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, courses.size());
+                                
+                                Toast.makeText(context, "Course deleted successfully", Toast.LENGTH_SHORT).show();
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(context, "Failed to delete course from registry", Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(context, "Failed to delete course", Toast.LENGTH_SHORT).show();
+                });
     }
 
     @Override

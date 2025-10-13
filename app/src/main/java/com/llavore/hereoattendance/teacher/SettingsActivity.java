@@ -13,13 +13,20 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.llavore.hereoattendance.R;
+import com.llavore.hereoattendance.AboutActivity;
+import com.llavore.hereoattendance.PrivacyPolicyActivity;
+import com.llavore.hereoattendance.TermsConditionsActivity;
+import com.llavore.hereoattendance.HelpSupportActivity;
 import com.llavore.hereoattendance.utils.SessionManager;
+import com.llavore.hereoattendance.utils.TeacherNavigationManager;
+import com.llavore.hereoattendance.utils.TransitionManager;
 
 public class SettingsActivity extends AppCompatActivity {
 
     private ImageView burgerIcon;
     private DrawerLayout drawerLayout;
     private SessionManager sessionManager;
+    private TeacherNavigationManager navigationManager;
     
     // Toggle switches
     private SwitchMaterial notificationSwitch;
@@ -38,7 +45,13 @@ public class SettingsActivity extends AppCompatActivity {
         
         // Initialize views and setup
         initializeViews();
-        setupNavigationDrawer();
+        
+        // Setup navigation using the common manager
+        navigationManager = new TeacherNavigationManager(this);
+        navigationManager.setupNavigationDrawer(drawerLayout, burgerIcon, findViewById(R.id.navigationView), "settings");
+        
+        // Setup click listeners
+        setupClickListeners();
 
     }
 
@@ -60,59 +73,38 @@ public class SettingsActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
     }
 
-    private void setupNavigationDrawer() {
-        // Setup burger icon click listener
-        burgerIcon.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+    private void setupClickListeners() {
+        // About click listener
+        aboutLayout.setOnClickListener(v -> {
+            TransitionManager.startActivityForward(this, AboutActivity.class);
+        });
 
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        navigationView.setCheckedItem(R.id.nav_settings);
-        navigationView.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_logout) {
-                showLogoutDialog();
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_dashboard) {
-                // Navigate to dashboard
-                Intent intent = new Intent(SettingsActivity.this, TeacherDashboard.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_account) {
-                // Navigate to profile
-                Intent intent = new Intent(SettingsActivity.this, TeacherProfileActivity.class);
-                startActivity(intent);
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_settings) {
-                // Already on settings page, just close drawer
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_notifications) {
-                // Handle notifications navigation
-                // You can add navigation to notifications activity here
-                drawerLayout.closeDrawers();
-                return true;
-            }
-            return false;
+        // Privacy Policy click listener
+        privacyLayout.setOnClickListener(v -> {
+            TransitionManager.startActivityForward(this, PrivacyPolicyActivity.class);
+        });
+
+        // Terms and Conditions click listener
+        termsLayout.setOnClickListener(v -> {
+            TransitionManager.startActivityForward(this, TermsConditionsActivity.class);
+        });
+
+        // Help and Support click listener
+        helpLayout.setOnClickListener(v -> {
+            TransitionManager.startActivityForward(this, HelpSupportActivity.class);
         });
     }
 
 
 
-    private void showLogoutDialog() {
-        new AlertDialog.Builder(this)
-            .setTitle("Logout")
-            .setMessage("Are you sure you want to logout?")
-            .setPositiveButton("Yes", (dialog, which) -> {
-                sessionManager.logout();
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                finish();
-            })
-            .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-            .show();
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Update navigation drawer to highlight settings
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        navigationManager.setCurrentActivity(navigationView, "settings");
     }
 
     @Override

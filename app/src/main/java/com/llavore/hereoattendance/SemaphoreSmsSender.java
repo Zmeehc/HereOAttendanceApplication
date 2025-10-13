@@ -32,16 +32,34 @@ public class SemaphoreSmsSender {
                     return;
                 }
                 
-                // Ensure phone number starts with +63 for Philippines
-                String formattedNumber = recipientNumber;
-                if (!formattedNumber.startsWith("+")) {
-                    if (formattedNumber.startsWith("09")) {
-                        formattedNumber = "+63" + formattedNumber.substring(1);
-                    } else if (formattedNumber.startsWith("9")) {
-                        formattedNumber = "+63" + formattedNumber;
-                    } else {
-                        formattedNumber = "+" + formattedNumber;
-                    }
+                // Clean and format phone number for Philippines
+                String formattedNumber = recipientNumber.trim();
+                
+                // Remove all spaces, dashes, and parentheses
+                formattedNumber = formattedNumber.replaceAll("[\\s\\-\\(\\)]", "");
+                
+                // Ensure proper Philippines format
+                if (formattedNumber.startsWith("+63")) {
+                    // Already has +63, just ensure no spaces
+                    formattedNumber = formattedNumber;
+                } else if (formattedNumber.startsWith("63")) {
+                    // Has 63 but no +
+                    formattedNumber = "+" + formattedNumber;
+                } else if (formattedNumber.startsWith("09")) {
+                    // Local format starting with 09
+                    formattedNumber = "+63" + formattedNumber.substring(1);
+                } else if (formattedNumber.startsWith("9")) {
+                    // Local format starting with 9
+                    formattedNumber = "+63" + formattedNumber;
+                } else {
+                    // Add +63 prefix for other cases
+                    formattedNumber = "+63" + formattedNumber;
+                }
+                
+                // Final validation - should be +63 followed by 10 digits
+                if (!formattedNumber.matches("\\+63\\d{10}")) {
+                    Log.e(TAG, "Invalid Philippines phone number format: " + formattedNumber);
+                    return;
                 }
                 
                 Log.i(TAG, "Formatted phone number: " + formattedNumber);

@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/poppins_regular"
             android:hint="Course Code"
-            android:inputType="textCapCharacters"
+            android:inputType="text"
             android:maxLength="6"
             android:textColor="@color/black"
             android:textSize="16sp" />

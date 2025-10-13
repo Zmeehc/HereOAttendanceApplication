@@ -7,7 +7,7 @@
     android:background="@color/green"
     android:padding="16dp"
     android:layout_marginBottom="16dp"
-    android:gravity="center_vertical">
+    android:gravity="bottom">
 
     <!-- Profile Picture -->
     <androidx.cardview.widget.CardView
@@ -58,7 +58,7 @@
             android:layout_marginTop="4dp"
             android:text="user@example.com"
             android:textColor="@color/white"
-            android:textSize="14sp"
+            android:textSize="11sp"
             android:fontFamily="@font/poppins_regular"
             android:maxLines="2"
             android:ellipsize="end" />

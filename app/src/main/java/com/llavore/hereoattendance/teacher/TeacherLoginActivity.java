@@ -72,6 +72,10 @@ public class TeacherLoginActivity extends AppCompatActivity {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
+            } else if(email.equals("Admin") && password.equals("Password123")) {
+                Intent goToAdmin = new Intent(TeacherLoginActivity.this, AdminDashboard.class);
+                startActivity(goToAdmin);
+                finish();
             }
 
             // Attempt login with teacher role guard

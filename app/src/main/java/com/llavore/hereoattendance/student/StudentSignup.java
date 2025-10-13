@@ -3,7 +3,13 @@ package com.llavore.hereoattendance.student;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -14,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -26,6 +33,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.llavore.hereoattendance.R;
+import com.llavore.hereoattendance.TermsConditionsActivity;
+import com.llavore.hereoattendance.utils.TransitionManager;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -72,6 +81,7 @@ public class StudentSignup extends AppCompatActivity {
         setupClickListeners();
         setupGenderDropdown();
         setupDatePicker();
+        setupClickableTermsText();
     }
 
     private void bindViews() {
@@ -261,5 +271,59 @@ public class StudentSignup extends AppCompatActivity {
 
     private String textOf(AutoCompleteTextView view) {
         return view.getText() == null ? "" : view.getText().toString().trim();
+    }
+
+    private void setupClickableTermsText() {
+        TextView termsText = findViewById(R.id.studentTermsText);
+        String fullText = "I agree to the Terms and Conditions and Privacy Policy.";
+        String highlightText = "Terms and Conditions and Privacy Policy.";
+
+        SpannableString spannableString = new SpannableString(fullText);
+
+        int startIndex = fullText.indexOf(highlightText);
+        int endIndex = startIndex + highlightText.length();
+
+        // Set custom color
+        spannableString.setSpan(
+                new ForegroundColorSpan(ContextCompat.getColor(this, R.color.green)),
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+
+        // Make it clickable
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View widget) {
+                // Open Terms and Conditions activity
+                Intent intent = new Intent(StudentSignup.this, TermsConditionsActivity.class);
+                startActivityForResult(intent, 1001);
+            }
+
+            @Override
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true); // Add underline
+            }
+        };
+
+        spannableString.setSpan(clickableSpan, startIndex, endIndex, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        termsText.setText(spannableString);
+        termsText.setMovementMethod(LinkMovementMethod.getInstance());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        
+        if (requestCode == 1001 && resultCode == RESULT_OK) {
+            // User agreed to terms and conditions
+            if (data != null && data.getBooleanExtra("terms_accepted", false)) {
+                // Automatically check the checkbox
+                studentTermsCheckBox.setChecked(true);
+                Toast.makeText(this, "Terms and Conditions accepted", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

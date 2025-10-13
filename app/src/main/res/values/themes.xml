@@ -2,8 +2,9 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.HereOAttendance" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-        <!-- <item name="android:statusBarColor">@color/green</item> -->
+        <item name="colorPrimary">@color/green</item>
+        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.HereOAttendance" parent="Base.Theme.HereOAttendance" />

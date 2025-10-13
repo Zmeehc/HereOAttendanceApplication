@@ -29,6 +29,7 @@ import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.model.User;
 import com.llavore.hereoattendance.utils.SessionManager;
 import com.llavore.hereoattendance.utils.NavigationHeaderManager;
+import com.llavore.hereoattendance.utils.TeacherNavigationManager;
 import com.bumptech.glide.Glide;
 
 public class TeacherProfileActivity extends AppCompatActivity {
@@ -38,6 +39,7 @@ public class TeacherProfileActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
     private DrawerLayout drawerLayout;
     private NavigationHeaderManager headerManager;
+    private TeacherNavigationManager navigationManager;
 
     // UI elements for user data
     private TextView emailValue, fullNameValue, genderValue, birthdateValue, idNumberValue, contactValue;
@@ -57,34 +59,25 @@ public class TeacherProfileActivity extends AppCompatActivity {
         // Initialize Firebase and session manager
         sessionManager = new SessionManager(this);
         headerManager = new NavigationHeaderManager(sessionManager);
+        navigationManager = new TeacherNavigationManager(this);
         mDatabase = FirebaseDatabase.getInstance().getReference();
 
         // Initialize UI elements
         initializeViews();
 
-        // Setup navigation drawer BEFORE setting up profile picture click
-        setupNavigationDrawer();
+        // Setup navigation drawer using the common manager
+        DrawerLayout drawerLayout = findViewById(R.id.main);
+        ImageView burgerIcon = findViewById(R.id.burgerIcon);
+        NavigationView navigationView = findViewById(R.id.navigationView);
+        navigationManager.setupNavigationDrawer(drawerLayout, burgerIcon, navigationView, "account");
 
-        // Setup profile picture click listener AFTER navigation drawer
+        // Setup profile picture click listener
         setupProfilePictureClick();
 
         // Load user data
         loadUserData();
-        
-        // Load user data into navigation header
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        loadNavigationHeader(navigationView);
     }
     
-    private void loadNavigationHeader(NavigationView navigationView) {
-        ImageView profilePicture = navigationView.findViewById(R.id.navProfilePicture);
-        TextView userName = navigationView.findViewById(R.id.navUserName);
-        TextView userEmail = navigationView.findViewById(R.id.navUserEmail);
-        
-        if (profilePicture != null && userName != null && userEmail != null) {
-            headerManager.loadUserData(profilePicture, userName, userEmail);
-        }
-    }
 
     private void initializeViews() {
         emailValue = findViewById(R.id.emailValue);
@@ -100,55 +93,6 @@ public class TeacherProfileActivity extends AppCompatActivity {
         burgerIcon = findViewById(R.id.burgerIcon);
     }
 
-    private void setupNavigationDrawer() {
-        // Setup burger icon click listener
-        burgerIcon.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
-
-        NavigationView navigationView = findViewById(R.id.navigationView);
-        navigationView.setCheckedItem(R.id.nav_account);
-        navigationView.setNavigationItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_logout) {
-                new AlertDialog.Builder(this)
-                        .setTitle("Logout")
-                        .setMessage("Are you sure you want to logout?")
-                        .setPositiveButton("Yes", (dialog, which) -> {
-                            sessionManager.logout();
-                            Intent intent = new Intent(TeacherProfileActivity.this, MainActivity.class);
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
-                        })
-                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
-                        .show();
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_dashboard) {
-                // Navigate to dashboard
-                Intent intent = new Intent(TeacherProfileActivity.this, TeacherDashboard.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_account) {
-                // Already on profile page, just close drawer
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_notifications) {
-                // Navigate to notifications
-                Intent intent = new Intent(TeacherProfileActivity.this, NotificationsActivity.class);
-                startActivity(intent);
-                drawerLayout.closeDrawers();
-                return true;
-            } else if (item.getItemId() == R.id.nav_settings) {
-                // Navigate to settings
-                Intent intent = new Intent(TeacherProfileActivity.this, SettingsActivity.class);
-                startActivity(intent);
-                drawerLayout.closeDrawers();
-                return true;
-            }
-            return false;
-        });
-    }
 
     private void setupProfilePictureClick() {
         ImageView profilePicture = findViewById(R.id.profilePicture);
@@ -312,9 +256,9 @@ public class TeacherProfileActivity extends AppCompatActivity {
         // Refresh user data when returning to profile
         loadUserData();
         
-        // Refresh navigation header
+        // Update navigation drawer to highlight account
         NavigationView navigationView = findViewById(R.id.navigationView);
-        loadNavigationHeader(navigationView);
+        navigationManager.setCurrentActivity(navigationView, "account");
     }
 
     @Override

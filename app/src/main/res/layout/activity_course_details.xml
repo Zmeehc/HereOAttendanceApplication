@@ -77,15 +77,6 @@
             android:paddingEnd="15dp"
             android:paddingBottom="16dp">
 
-            <ImageView
-                android:id="@+id/menuIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:contentDescription="More options"
-                android:src="@drawable/three_dots"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
             <TextView
                 android:id="@+id/courseTitleDetail"
                 android:layout_width="0dp"
@@ -94,7 +85,7 @@
                 android:text="Subject Name | Room"
                 android:textColor="@color/green"
                 android:textSize="18sp"
-                app:layout_constraintEnd_toStartOf="@id/menuIcon"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -211,6 +202,15 @@
                     android:text="- Day"
                     android:textColor="@color/green3"
                     android:textSize="20sp" />
+
+                <ImageView
+                    android:id="@+id/dateDropdownIcon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="8dp"
+                    android:src="@drawable/drop_down_green"
+                    android:contentDescription="Date dropdown" />
+
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton
@@ -290,6 +290,17 @@
                 android:layout_marginTop="20dp"
                 android:textSize="20sp"
                 android:fontFamily="@font/poppins_semibold" />
+
+            <!-- Students Present List -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/studentsPresentRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="20dp"
+                android:maxHeight="400dp"
+                android:padding="8dp"
+                tools:listitem="@layout/students_present_card" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
