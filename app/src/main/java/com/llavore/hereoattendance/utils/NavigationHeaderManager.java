@@ -76,13 +76,13 @@ public class NavigationHeaderManager {
                                 if (imageUrl != null && !imageUrl.isEmpty()) {
                                     Glide.with(profilePicture.getContext())
                                             .load(imageUrl)
-                                            .placeholder(R.drawable.baseline_person_24)
-                                            .error(R.drawable.baseline_person_24)
+                                            .placeholder(R.drawable.default_profile_2)
+                                            .error(R.drawable.default_profile_2)
                                             .circleCrop()
                                             .override(120, 120)
                                             .into(profilePicture);
                                 } else {
-                                    profilePicture.setImageResource(R.drawable.baseline_person_24);
+                                    profilePicture.setImageResource(R.drawable.default_profile_2);
                                 }
                             } else {
                                 setDefaultValues(profilePicture, userName, userEmail);
@@ -112,7 +112,7 @@ public class NavigationHeaderManager {
     
     private void setDefaultValues(ImageView profilePicture, TextView userName, TextView userEmail) {
         if (profilePicture != null) {
-            profilePicture.setImageResource(R.drawable.baseline_person_24);
+            profilePicture.setImageResource(R.drawable.default_profile_2);
         }
         if (userName != null) {
             userName.setText("User");

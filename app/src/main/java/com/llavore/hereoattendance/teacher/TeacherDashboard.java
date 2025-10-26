@@ -194,13 +194,13 @@ public class TeacherDashboard extends AppCompatActivity {
                                 if (user.getProfileImageUrl() != null && !user.getProfileImageUrl().isEmpty()) {
                                     Glide.with(TeacherDashboard.this)
                                             .load(user.getProfileImageUrl())
-                                            .placeholder(R.drawable.baseline_person_24)
-                                            .error(R.drawable.baseline_person_24)
+                                            .placeholder(R.drawable.default_profile_2)
+                                            .error(R.drawable.default_profile_2)
                                             .circleCrop()
                                             .override(200, 200)
                                             .into(profilePicture);
                                 } else {
-                                    profilePicture.setImageResource(R.drawable.baseline_person_24);
+                                    profilePicture.setImageResource(R.drawable.default_profile_2);
                                 }
                             }
                         }

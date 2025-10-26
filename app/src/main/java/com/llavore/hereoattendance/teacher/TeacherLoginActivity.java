@@ -26,7 +26,11 @@ import com.llavore.hereoattendance.utils.SessionManager;
 
 public class TeacherLoginActivity extends AppCompatActivity {
 
-    private TextView switchRoles, signUp;
+    // Admin credentials - exclusive for admin access
+    private static final String ADMIN_EMAIL = "Admin";
+    private static final String ADMIN_PASSWORD = "Password123";
+
+    private TextView switchRoles;
     private TextInputEditText txtEmail, txtPassword;
 
     private MaterialButton btnLogin;
@@ -52,17 +56,12 @@ public class TeacherLoginActivity extends AppCompatActivity {
         sessionManager = new SessionManager(this);
 
         switchRoles = findViewById(R.id.roleSwitch);
-        signUp = findViewById(R.id.txtSignUp);
         txtEmail = findViewById(R.id.txtEmail);
         txtPassword = findViewById(R.id.txtPassword);
         btnLogin = findViewById(R.id.btnLogin);
 
         switchRoles.setOnClickListener(v -> {
             startActivity(new Intent(this, MainActivity.class));
-        });
-
-        signUp.setOnClickListener(v -> {
-            startActivity(new Intent(this, TeacherSignUpActivity.class));
         });
 
         btnLogin.setOnClickListener(v -> {
@@ -72,10 +71,12 @@ public class TeacherLoginActivity extends AppCompatActivity {
             if (email.isEmpty() || password.isEmpty()) {
                 Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
                 return;
-            } else if(email.equals("Admin") && password.equals("Password123")) {
+            } else if(email.equals(ADMIN_EMAIL) && password.equals(ADMIN_PASSWORD)) {
+                Toast.makeText(this, "You are now logged in as Admin", Toast.LENGTH_SHORT).show();
                 Intent goToAdmin = new Intent(TeacherLoginActivity.this, AdminDashboard.class);
                 startActivity(goToAdmin);
                 finish();
+                return; // Exit early to prevent attempting Firebase login
             }
 
             // Attempt login with teacher role guard

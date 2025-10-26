@@ -380,34 +380,6 @@
                     android:textSize="13sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Terms and conditions -->
-            <CheckBox
-                android:id="@+id/checkBox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:layout_marginStart="13dp"
-                app:buttonTint="@color/green"
-                app:layout_constraintTop_toBottomOf="@id/confirmPassField"
-                app:layout_constraintStart_toStartOf="parent" />
-
-            <TextView
-                android:id="@+id/termsText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="25dp"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:fontFamily="@font/poppins_regular"
-                android:text="I agree to the Terms and Conditions and Privacy Policy."
-                android:clickable="true"
-                android:focusable="true"
-                android:background="?android:attr/selectableItemBackground"
-                app:layout_constraintTop_toTopOf="@id/checkBox"
-                app:layout_constraintBottom_toBottomOf="@id/checkBox"
-                app:layout_constraintStart_toEndOf="@id/checkBox"
-                app:layout_constraintEnd_toEndOf="parent" />
 
             <!-- Sign Up Button -->
             <com.google.android.material.button.MaterialButton
@@ -423,39 +395,10 @@
                 android:textSize="18sp"
                 app:cornerRadius="10dp"
                 app:backgroundTint="@color/green"
-                app:layout_constraintTop_toBottomOf="@id/checkBox"
+                app:layout_constraintTop_toBottomOf="@id/confirmPassField"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
-            <!-- Sign In Text -->
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="76dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="2dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Already have an account?"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toStartOf="@+id/txtSignIn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
-
-            <TextView
-                android:id="@+id/txtSignIn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="50dp"
-                android:layout_marginEnd="91dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Sign in here."
-                android:textColor="@color/green"
-                android:textSize="13sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/textView10"
-                app:layout_constraintTop_toBottomOf="@+id/btnSignUp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
