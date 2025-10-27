@@ -14,8 +14,8 @@ import java.util.concurrent.Executors;
 public class SemaphoreSmsSender {
 
     private static final String TAG = "SemaphoreSmsSender";
-    private static final String API_KEY = "7bafa93792c4f8e16dd7adb05eef68dc";
-    private static final String SENDER_NAME = "SyncSight";
+    private static final String API_KEY = "d345bb941b8901f68025e4d2f05ea995";
+    private static final String SENDER_NAME = "FarmBite";
     private static final String ENDPOINT = "https://api.semaphore.co/api/v4/messages";
     
     private static final ExecutorService executor = Executors.newSingleThreadExecutor();

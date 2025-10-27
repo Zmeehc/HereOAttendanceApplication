@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.models.Course;
 import com.llavore.hereoattendance.teacher.ArchiveCoursesActivity;
-import com.llavore.hereoattendance.teacher.AttendanceRecord;
+import com.llavore.hereoattendance.teacher.AttendanceRecordActivity;
 import com.llavore.hereoattendance.teacher.CourseDetails;
 
 import java.util.List;
@@ -186,7 +186,7 @@ public class ArchivedCourseAdapter extends RecyclerView.Adapter<ArchivedCourseAd
     
     private void exportAttendanceRecord(Course course) {
         // Navigate to attendance record with archived flag
-        android.content.Intent intent = new android.content.Intent(context, AttendanceRecord.class);
+        android.content.Intent intent = new android.content.Intent(context, AttendanceRecordActivity.class);
         intent.putExtra("courseId", course.id);
         intent.putExtra("courseName", course.name);
         intent.putExtra("courseCode", course.code);

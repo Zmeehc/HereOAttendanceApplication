@@ -634,8 +634,43 @@ public class CourseDetails extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         android.util.Log.d("CourseDetails", "Successfully saved ABSENT record for: " + record.getFirstName() + " " + record.getLastName());
+                        
+                        // Check and increment absence count, send SMS if needed
+                        checkAndIncrementAbsenceCount(record.getEdpNumber());
                     } else {
                         android.util.Log.e("CourseDetails", "Failed to save ABSENT record: " + task.getException());
+                    }
+                });
+    }
+    
+    private void checkAndIncrementAbsenceCount(String studentEdpNumber) {
+        // Get current teacher ID
+        String teacherId = FirebaseAuth.getInstance().getCurrentUser() != null ? 
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        
+        if (teacherId == null) {
+            android.util.Log.e("CourseDetails", "Teacher ID is null, cannot check absence count");
+            return;
+        }
+        
+        // Get course name for SMS
+        mDatabase.child("courses").child(courseCode).child("name")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        String courseName = snapshot.getValue(String.class);
+                        if (courseName == null) {
+                            courseName = courseCode; // Fallback to course code
+                        }
+                        
+                        // Call the SMS check method from SmsAlertsActivity
+                        com.llavore.hereoattendance.teacher.SmsAlertsActivity.checkAndIncrementAbsenceCount(
+                                teacherId, studentEdpNumber, courseCode, courseName, CourseDetails.this);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        android.util.Log.e("CourseDetails", "Failed to get course name: " + databaseError.getMessage());
                     }
                 });
     }

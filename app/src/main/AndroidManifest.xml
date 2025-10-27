@@ -68,9 +68,6 @@
             android:name=".teacher.QRScannerActivity"
             android:exported="false" />
         <activity
-            android:name=".teacher.AttendanceRecord"
-            android:exported="false" />
-        <activity
             android:name=".teacher.AttendanceRecordActivity"
             android:exported="false" />
         <activity

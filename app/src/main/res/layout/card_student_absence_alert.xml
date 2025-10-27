@@ -57,7 +57,8 @@
                     android:padding="4dp"
                     android:background="?attr/selectableItemBackgroundBorderless"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:tint="@color/black" />
 
             </LinearLayout>
 
@@ -96,21 +97,37 @@
                 android:orientation="vertical"
                 android:layout_marginTop="12dp" />
 
-            <!-- Send SMS button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/sendSmsButton"
+            <!-- SMS Notification Status -->
+            <LinearLayout
+                android:id="@+id/smsStatusContainer"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Send SMS Notification"
-                android:textColor="@color/white"
-                android:textSize="14sp"
-                android:fontFamily="@font/poppins_medium"
-                app:backgroundTint="@color/green"
-                app:icon="@drawable/message_icon"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:cornerRadius="8dp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:background="@drawable/rounded_green"
+                android:padding="12dp">
+
+                <!-- Success icon -->
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/baseline_check_24"
+                    android:layout_marginEnd="8dp"
+                    android:tint="@color/white" />
+
+                <!-- Status message -->
+                <TextView
+                    android:id="@+id/smsStatusText"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="SMS Alert has been sent to parent"
+                    android:textColor="@color/white"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/poppins_medium" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

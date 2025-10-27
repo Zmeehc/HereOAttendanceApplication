@@ -6,6 +6,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.PopupMenu;
+import androidx.appcompat.app.AlertDialog;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -757,6 +759,11 @@ public class StudentNotificationsActivity extends AppCompatActivity implements S
         }
     }
     
+    @Override
+    public void onOverflowMenuClick(StudentNotification notification, View view) {
+        showOverflowMenu(notification, view);
+    }
+    
     private void markNotificationAsRead(StudentNotification notification) {
         android.util.Log.d("StudentNotifications", "Marking notification as read: " + notification.getId());
         
@@ -807,6 +814,57 @@ public class StudentNotificationsActivity extends AppCompatActivity implements S
                 .addOnFailureListener(e -> {
                     android.util.Log.e("StudentNotifications", "Failed to save read status: " + e.getMessage());
                 });
+    }
+    
+    private void showOverflowMenu(StudentNotification notification, View view) {
+        PopupMenu popupMenu = new PopupMenu(this, view);
+        popupMenu.getMenu().add("Delete notification");
+        
+        popupMenu.setOnMenuItemClickListener(item -> {
+            if (item.getTitle().toString().equals("Delete notification")) {
+                showDeleteConfirmation(notification);
+                return true;
+            }
+            return false;
+        });
+        
+        popupMenu.show();
+    }
+    
+    private void showDeleteConfirmation(StudentNotification notification) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Notification");
+        builder.setMessage("Are you sure you want to delete this notification? This action cannot be undone.");
+        
+        builder.setPositiveButton("Yes, Delete", (dialog, which) -> {
+            deleteNotification(notification);
+        });
+        
+        builder.setNegativeButton("Cancel", (dialog, which) -> {
+            dialog.dismiss();
+        });
+        
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+    
+    private void deleteNotification(StudentNotification notification) {
+        // Remove from local lists
+        notifications.remove(notification);
+        allNotifications.remove(notification);
+        
+        // Update adapter
+        adapter.notifyDataSetChanged();
+        
+        // Show success message
+        Toast.makeText(this, "Notification deleted", Toast.LENGTH_SHORT).show();
+        
+        // Check if no more notifications
+        if (notifications.isEmpty()) {
+            showNoNotifications();
+        }
+        
+        android.util.Log.d("StudentNotifications", "Notification deleted: " + notification.getId());
     }
     
     // Interface for callback

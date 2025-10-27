@@ -22,6 +22,7 @@ import com.llavore.hereoattendance.adapters.StudentAbsenceAlertAdapter;
 import com.llavore.hereoattendance.models.AttendanceRecord;
 import com.llavore.hereoattendance.models.Course;
 import com.llavore.hereoattendance.models.StudentAbsenceAlert;
+import com.llavore.hereoattendance.models.SmsNotificationHistory;
 import com.llavore.hereoattendance.SemaphoreSmsSender;
 import android.widget.Toast;
 import android.widget.PopupMenu;
@@ -42,7 +43,7 @@ public class SmsAlertsActivity extends AppCompatActivity {
     private TextView noAlertsSubtext;
     
     private StudentAbsenceAlertAdapter adapter;
-    private List<StudentAbsenceAlert> absenceAlerts;
+    private List<SmsNotificationHistory> notificationHistory;
     private DatabaseReference mDatabase;
     private String currentTeacherId;
 
@@ -64,19 +65,15 @@ public class SmsAlertsActivity extends AppCompatActivity {
         noAlertsText = findViewById(R.id.noAlertsText);
         noAlertsSubtext = findViewById(R.id.noAlertsSubtext);
         
-        absenceAlerts = new ArrayList<>();
-        adapter = new StudentAbsenceAlertAdapter(absenceAlerts, this);
+        notificationHistory = new ArrayList<>();
+        adapter = new StudentAbsenceAlertAdapter(notificationHistory, this);
         
         absenceAlertsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         absenceAlertsRecyclerView.setAdapter(adapter);
         
         // Set up adapter click listeners
-        adapter.setOnSendSmsClickListener((alert, holder) -> {
-            sendSmsToParent(alert, holder);
-        });
-        
-        adapter.setOnOverflowMenuClickListener((alert, view) -> {
-            showOverflowMenu(alert, view);
+        adapter.setOnOverflowMenuClickListener((notification, view) -> {
+            showOverflowMenu(notification, view);
         });
     }
 
@@ -96,206 +93,230 @@ public class SmsAlertsActivity extends AppCompatActivity {
 
     private void loadAbsenceAlerts() {
         if (currentTeacherId == null) {
-            showNoAlertsMessage("Not logged in", "Please log in to view absence alerts");
+            showNoAlertsMessage("Not logged in", "Please log in to view SMS notifications");
             return;
         }
 
-        // Load teacher's courses first
-        mDatabase.child("users").child("teachers").child(currentTeacherId).child("courses")
+        android.util.Log.d("SmsAlertsActivity", "Loading SMS notifications for teacher: " + currentTeacherId);
+
+        // Load SMS notification history for this teacher
+        mDatabase.child("smsNotifications").child(currentTeacherId)
+                .orderByChild("timestamp")
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(DataSnapshot coursesSnapshot) {
-                        if (!coursesSnapshot.exists()) {
-                            showNoAlertsMessage("No courses found", "Create courses to track student attendance");
-                            return;
-                        }
-
-                        List<String> courseCodes = new ArrayList<>();
-                        Map<String, Course> courseMap = new HashMap<>();
-
-                        // Collect course codes and course information
-                        for (DataSnapshot courseSnapshot : coursesSnapshot.getChildren()) {
-                            Course course = courseSnapshot.getValue(Course.class);
-                            if (course != null && course.code != null) {
-                                courseCodes.add(course.code);
-                                courseMap.put(course.code, course);
+                    public void onDataChange(DataSnapshot snapshot) {
+                        android.util.Log.d("SmsAlertsActivity", "DataSnapshot exists: " + snapshot.exists());
+                        android.util.Log.d("SmsAlertsActivity", "DataSnapshot children count: " + snapshot.getChildrenCount());
+                        
+                        notificationHistory.clear();
+                        
+                        if (snapshot.exists()) {
+                            for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
+                                android.util.Log.d("SmsAlertsActivity", "Processing notification: " + notificationSnapshot.getKey());
+                                SmsNotificationHistory notification = notificationSnapshot.getValue(SmsNotificationHistory.class);
+                                if (notification != null) {
+                                    android.util.Log.d("SmsAlertsActivity", "Added notification for student: " + notification.getStudentFullName());
+                                    notificationHistory.add(notification);
+                                } else {
+                                    android.util.Log.e("SmsAlertsActivity", "Failed to parse notification from snapshot");
+                                }
                             }
                         }
-
-                        if (courseCodes.isEmpty()) {
-                            showNoAlertsMessage("No courses found", "Create courses to track student attendance");
-                            return;
+                        
+                        android.util.Log.d("SmsAlertsActivity", "Total notifications loaded: " + notificationHistory.size());
+                        
+                        // Sort by timestamp (newest first)
+                        notificationHistory.sort((n1, n2) -> Long.compare(n2.getTimestamp(), n1.getTimestamp()));
+                        
+                        adapter.notifyDataSetChanged();
+                        
+                        if (notificationHistory.isEmpty()) {
+                            showNoAlertsMessage("No SMS notifications yet", "SMS notifications will appear here when students reach 3 absences");
+                        } else {
+                            showAbsenceAlerts();
                         }
-
-                        // Load attendance data for all courses
-                        loadAttendanceDataForCourses(courseCodes, courseMap);
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        showNoAlertsMessage("Error loading courses", "Please try again later");
+                        android.util.Log.e("SmsAlertsActivity", "Database error loading notifications: " + databaseError.getMessage());
+                        android.util.Log.e("SmsAlertsActivity", "Error code: " + databaseError.getCode());
+                        android.util.Log.e("SmsAlertsActivity", "Error details: " + databaseError.getDetails());
+                        
+                        // Handle specific error types
+                        if (databaseError.getCode() == DatabaseError.PERMISSION_DENIED) {
+                            showNoAlertsMessage("Permission denied", "Please contact administrator to configure SMS notification permissions");
+                        } else {
+                            showNoAlertsMessage("Error loading notifications", "Please try again later");
+                        }
                     }
                 });
     }
 
-    private void loadAttendanceDataForCourses(List<String> courseCodes, Map<String, Course> courseMap) {
-        Map<String, Map<String, Integer>> studentAbsenceCounts = new HashMap<>();
-        Map<String, Map<String, StudentAbsenceAlert.CourseAbsence>> studentCourseAbsences = new HashMap<>();
-
-        AtomicInteger coursesProcessed = new AtomicInteger(0);
-        int totalCourses = courseCodes.size();
-
-        for (String courseCode : courseCodes) {
-            Course course = courseMap.get(courseCode);
-            if (course == null) continue;
-
-            // Load all sessions for this course
-            mDatabase.child("courses").child(courseCode).child("sessions")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot sessionsSnapshot) {
-                            int processed = coursesProcessed.incrementAndGet();
-                            
-                            if (sessionsSnapshot.exists()) {
-                                // Process each session
-                                for (DataSnapshot sessionSnapshot : sessionsSnapshot.getChildren()) {
-                                    DataSnapshot attendanceSnapshot = sessionSnapshot.child("attendance");
-                                    if (attendanceSnapshot.exists()) {
-                                        processSessionAttendance(attendanceSnapshot, course, studentAbsenceCounts, studentCourseAbsences);
-                                    }
-                                }
-                            }
-
-                            // Check if we've processed all courses
-                            if (processed == totalCourses) {
-                                generateAbsenceAlerts(studentAbsenceCounts, studentCourseAbsences);
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            int processed = coursesProcessed.incrementAndGet();
-                            if (processed == totalCourses) {
-                                generateAbsenceAlerts(studentAbsenceCounts, studentCourseAbsences);
-                            }
-                        }
-                    });
-        }
-    }
-
-    private void processSessionAttendance(DataSnapshot attendanceSnapshot, Course course, 
-                                        Map<String, Map<String, Integer>> studentAbsenceCounts,
-                                        Map<String, Map<String, StudentAbsenceAlert.CourseAbsence>> studentCourseAbsences) {
+    // This method will be called from the attendance system when a student reaches exactly 3 absences
+    public static void checkAndSendSmsIfNeeded(String teacherId, String studentEdpNumber, String courseCode, String courseName, android.content.Context context) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
         
-        for (DataSnapshot studentSnapshot : attendanceSnapshot.getChildren()) {
-            AttendanceRecord record = studentSnapshot.getValue(AttendanceRecord.class);
-            if (record == null || !"ABSENT".equals(record.getStatus())) {
-                continue; // Only count ABSENT records
-            }
-
-            String edpNumber = record.getEdpNumber();
-            String courseCode = course.code;
-
-            // Initialize maps if needed
-            if (!studentAbsenceCounts.containsKey(edpNumber)) {
-                studentAbsenceCounts.put(edpNumber, new HashMap<>());
-                studentCourseAbsences.put(edpNumber, new HashMap<>());
-            }
-
-            // Count absences per course
-            Map<String, Integer> courseCounts = studentAbsenceCounts.get(edpNumber);
-            int currentCount = courseCounts.getOrDefault(courseCode, 0);
-            courseCounts.put(courseCode, currentCount + 1);
-
-            // Store course absence information
-            Map<String, StudentAbsenceAlert.CourseAbsence> courseAbsences = studentCourseAbsences.get(edpNumber);
-            if (!courseAbsences.containsKey(courseCode)) {
-                String schedule = course.startTime + " - " + course.endTime + " | " + course.scheduleDays;
-                StudentAbsenceAlert.CourseAbsence courseAbsence = new StudentAbsenceAlert.CourseAbsence(
-                        courseCode, course.name, schedule, 0);
-                courseAbsences.put(courseCode, courseAbsence);
-            }
-
-            // Update absence count for this course
-            StudentAbsenceAlert.CourseAbsence courseAbsence = courseAbsences.get(courseCode);
-            courseAbsence.setAbsenceCount(courseCounts.get(courseCode));
-        }
-    }
-
-    private void generateAbsenceAlerts(Map<String, Map<String, Integer>> studentAbsenceCounts,
-                                     Map<String, Map<String, StudentAbsenceAlert.CourseAbsence>> studentCourseAbsences) {
+        android.util.Log.d("SmsAlertsActivity", "checkAndSendSmsIfNeeded called for student: " + studentEdpNumber + " in course: " + courseCode);
         
-        absenceAlerts.clear();
-        
-        for (String edpNumber : studentAbsenceCounts.keySet()) {
-            Map<String, Integer> courseCounts = studentAbsenceCounts.get(edpNumber);
-            Map<String, StudentAbsenceAlert.CourseAbsence> courseAbsences = studentCourseAbsences.get(edpNumber);
-            
-            // Check if student has 3+ absences in any course
-            boolean hasViolation = false;
-            List<StudentAbsenceAlert.CourseAbsence> violationCourses = new ArrayList<>();
-            int totalAbsences = 0;
-            
-            for (String courseCode : courseCounts.keySet()) {
-                int absenceCount = courseCounts.get(courseCode);
-                totalAbsences += absenceCount;
-                
-                if (absenceCount >= 3) {
-                    hasViolation = true;
-                    violationCourses.add(courseAbsences.get(courseCode));
-                }
-            }
-            
-            if (hasViolation) {
-                // Get student information (we'll need to load this from the database)
-                loadStudentInformation(edpNumber, totalAbsences, violationCourses);
-            }
-        }
-        
-        if (absenceAlerts.isEmpty()) {
-            showNoAlertsMessage("No SMS alerts yet", "SMS alerts will appear here when students have 3+ absences");
-        } else {
-            showAbsenceAlerts();
-        }
-    }
-
-    private void loadStudentInformation(String edpNumber, int totalAbsences, List<StudentAbsenceAlert.CourseAbsence> violationCourses) {
-        // Load student information from the database
-        mDatabase.child("users").child("students").orderByChild("edpNumber").equalTo(edpNumber)
+        // Load student information
+        mDatabase.child("users").child("students").orderByChild("edpNumber").equalTo(studentEdpNumber)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot snapshot) {
+                        android.util.Log.d("SmsAlertsActivity", "Student data snapshot exists: " + snapshot.exists());
+                        
                         if (snapshot.exists()) {
                             for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                                String firstName = studentSnapshot.child("firstName").getValue(String.class);
-                                String lastName = studentSnapshot.child("lastName").getValue(String.class);
-                                String profileImageUrl = studentSnapshot.child("profileImageUrl").getValue(String.class);
+                                String guardianContactNumber = studentSnapshot.child("guardianContactNumber").getValue(String.class);
+                                String studentFirstName = studentSnapshot.child("firstName").getValue(String.class);
+                                String studentLastName = studentSnapshot.child("lastName").getValue(String.class);
+                                String studentProfileImageUrl = studentSnapshot.child("profileImageUrl").getValue(String.class);
                                 
-                                if (firstName != null && lastName != null) {
-                                    StudentAbsenceAlert alert = new StudentAbsenceAlert(
-                                            edpNumber, firstName, lastName, profileImageUrl, 
-                                            totalAbsences, violationCourses);
-                                    absenceAlerts.add(alert);
+                                android.util.Log.d("SmsAlertsActivity", "Student: " + studentFirstName + " " + studentLastName);
+                                android.util.Log.d("SmsAlertsActivity", "Guardian contact: " + guardianContactNumber);
+                                
+                                if (guardianContactNumber != null && !guardianContactNumber.trim().isEmpty()) {
+                                    // Create SMS message
+                                    String message = createSmsMessage(studentFirstName, studentLastName, courseName);
                                     
-                                    // Update adapter
-                                    adapter.notifyDataSetChanged();
+                                    android.util.Log.d("SmsAlertsActivity", "Sending SMS to: " + guardianContactNumber);
+                                    android.util.Log.d("SmsAlertsActivity", "SMS message: " + message);
                                     
-                                    // Show alerts if this was the last student being processed
-                                    if (absenceAlerts.size() > 0) {
-                                        showAbsenceAlerts();
+                                    // Send SMS (asynchronous - no return value)
+                                    SemaphoreSmsSender.sendSMS(guardianContactNumber, message);
+                                    
+                                    // Show toast that SMS is being sent
+                                    if (context != null) {
+                                        android.widget.Toast.makeText(context, "SMS being sent to parent", android.widget.Toast.LENGTH_LONG).show();
+                                    }
+                                    
+                                    // Save notification to history
+                                    saveSmsNotification(teacherId, studentEdpNumber, studentFirstName, studentLastName, 
+                                                      studentProfileImageUrl, guardianContactNumber, message, courseCode, courseName);
+                                    
+                                    // Reset absence counter for this student in this course
+                                    resetAbsenceCounter(studentEdpNumber, courseCode);
+                                    
+                                    android.util.Log.d("SmsAlertsActivity", "SMS notification saved and counter reset for student: " + studentEdpNumber);
+                                } else {
+                                    android.util.Log.e("SmsAlertsActivity", "Guardian contact number is null or empty for student: " + studentEdpNumber);
+                                    if (context != null) {
+                                        android.widget.Toast.makeText(context, "Parent contact number not found for student", android.widget.Toast.LENGTH_LONG).show();
                                     }
                                 }
                                 break; // Only process the first match
                             }
+                        } else {
+                            android.util.Log.e("SmsAlertsActivity", "Student not found with EDP number: " + studentEdpNumber);
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        // Continue without this student's information
+                        android.util.Log.e("SmsAlertsActivity", "Database error loading student data: " + databaseError.getMessage());
                     }
                 });
     }
+    
+    // Helper method to create SMS message
+    private static String createSmsMessage(String firstName, String lastName, String courseName) {
+        StringBuilder message = new StringBuilder();
+        message.append("Good day, Here-O Attendance has detected that your son/daughter ");
+        message.append(firstName != null ? firstName : "").append(" ");
+        message.append(lastName != null ? lastName : "");
+        message.append(" has been absent 3 times in ").append(courseName);
+        message.append(". Please be informed.");
+        return message.toString();
+    }
+    
+    // Helper method to save SMS notification to history
+    private static void saveSmsNotification(String teacherId, String studentEdpNumber, String studentFirstName, 
+                                          String studentLastName, String studentProfileImageUrl, String guardianContactNumber, 
+                                          String message, String courseCode, String courseName) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        
+        android.util.Log.d("SmsAlertsActivity", "Saving SMS notification for teacher: " + teacherId);
+        
+        SmsNotificationHistory notification = new SmsNotificationHistory(
+                studentEdpNumber, studentFirstName, studentLastName, studentProfileImageUrl,
+                guardianContactNumber, message, System.currentTimeMillis(), courseCode, courseName
+        );
+        
+        // Save to teacher's SMS notification history
+        mDatabase.child("smsNotifications").child(teacherId).push().setValue(notification)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        android.util.Log.d("SmsAlertsActivity", "SMS notification saved successfully to database");
+                    } else {
+                        android.util.Log.e("SmsAlertsActivity", "Failed to save SMS notification: " + task.getException());
+                        if (task.getException() != null) {
+                            android.util.Log.e("SmsAlertsActivity", "Exception details: " + task.getException().getMessage());
+                        }
+                    }
+                });
+    }
+    
+    // Helper method to reset absence counter after sending SMS
+    private static void resetAbsenceCounter(String studentEdpNumber, String courseCode) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        
+        // Reset the absence counter for this student in this course
+        // We'll store this in a separate node to track absence cycles
+        mDatabase.child("absenceCounters").child(courseCode).child(studentEdpNumber).setValue(0);
+    }
+    
+    // Method to check and increment absence count, send SMS if needed
+    public static void checkAndIncrementAbsenceCount(String teacherId, String studentEdpNumber, String courseCode, String courseName, android.content.Context context) {
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
+        
+        android.util.Log.d("SmsAlertsActivity", "checkAndIncrementAbsenceCount called for student: " + studentEdpNumber + " in course: " + courseCode);
+        
+        // Get current absence count for this student in this course
+        mDatabase.child("absenceCounters").child(courseCode).child(studentEdpNumber)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        int currentCount = 0;
+                        if (snapshot.exists()) {
+                            Integer count = snapshot.getValue(Integer.class);
+                            if (count != null) {
+                                currentCount = count;
+                            }
+                        }
+                        
+                        android.util.Log.d("SmsAlertsActivity", "Current absence count: " + currentCount);
+                        
+                        // Increment the count
+                        int newCount = currentCount + 1;
+                        
+                        android.util.Log.d("SmsAlertsActivity", "New absence count: " + newCount);
+                        
+                        // Update the counter
+                        mDatabase.child("absenceCounters").child(courseCode).child(studentEdpNumber).setValue(newCount);
+                        
+                        // Check if this is exactly the 3rd absence
+                        if (newCount == 3) {
+                            android.util.Log.d("SmsAlertsActivity", "3rd absence detected! Sending SMS notification");
+                            
+                            // Show toast notification that 3 absences detected
+                            if (context != null) {
+                                android.widget.Toast.makeText(context, "3 absences detected. Sending SMS to Parent", android.widget.Toast.LENGTH_LONG).show();
+                            }
+                            
+                            // Send SMS notification
+                            checkAndSendSmsIfNeeded(teacherId, studentEdpNumber, courseCode, courseName, context);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        android.util.Log.e("SmsAlertsActivity", "Database error checking absence count: " + databaseError.getMessage());
+                    }
+                });
+    }
+    
+
 
     private void showAbsenceAlerts() {
         noAlertsLayout.setVisibility(View.GONE);
@@ -309,79 +330,14 @@ public class SmsAlertsActivity extends AppCompatActivity {
         absenceAlertsRecyclerView.setVisibility(View.GONE);
     }
     
-    private void sendSmsToParent(StudentAbsenceAlert alert, StudentAbsenceAlertAdapter.ViewHolder holder) {
-        // Show loading message
-        Toast.makeText(this, "Sending SMS to parent...", Toast.LENGTH_SHORT).show();
-        
-        // Load student's parent information
-        mDatabase.child("users").child("students").orderByChild("edpNumber").equalTo(alert.getEdpNumber())
-                .addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot snapshot) {
-                        if (snapshot.exists()) {
-                            for (DataSnapshot studentSnapshot : snapshot.getChildren()) {
-                                String guardianContactNumber = studentSnapshot.child("guardianContactNumber").getValue(String.class);
-                                String studentFirstName = studentSnapshot.child("firstName").getValue(String.class);
-                                String studentLastName = studentSnapshot.child("lastName").getValue(String.class);
-                                
-                                if (guardianContactNumber != null && !guardianContactNumber.trim().isEmpty()) {
-                                    // Create SMS message
-                                    String message = createSmsMessage(alert, studentFirstName, studentLastName);
-                                    
-                                    // Send SMS
-                                    SemaphoreSmsSender.sendSMS(guardianContactNumber, message);
-                                    
-                                    // Update button state to success
-                                    adapter.setButtonSuccessState(holder);
-                                    
-                                    Toast.makeText(SmsAlertsActivity.this, 
-                                            "SMS sent to parent successfully!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(SmsAlertsActivity.this, 
-                                            "Parent contact number not found for this student", Toast.LENGTH_LONG).show();
-                                }
-                                break; // Only process the first match
-                            }
-                        } else {
-                            Toast.makeText(SmsAlertsActivity.this, 
-                                    "Student information not found", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                        Toast.makeText(SmsAlertsActivity.this, 
-                                "Failed to load student information", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
     
-    private String createSmsMessage(StudentAbsenceAlert alert, String firstName, String lastName) {
-        StringBuilder message = new StringBuilder();
-        message.append("Good day, Here-O Attendance has detected that your son/daughter ");
-        message.append(firstName != null ? firstName : "").append(" ");
-        message.append(lastName != null ? lastName : "");
-        message.append(" have been absent more than 3 times in these subjects: ");
-        
-        // Add course names (without schedule)
-        List<StudentAbsenceAlert.CourseAbsence> courseAbsences = alert.getCourseAbsences();
-        for (int i = 0; i < courseAbsences.size(); i++) {
-            if (i > 0) {
-                message.append(", ");
-            }
-            message.append(courseAbsences.get(i).getCourseName());
-        }
-        
-        return message.toString();
-    }
-    
-    private void showOverflowMenu(StudentAbsenceAlert alert, View view) {
+    private void showOverflowMenu(SmsNotificationHistory notification, View view) {
         PopupMenu popupMenu = new PopupMenu(this, view);
-        popupMenu.getMenu().add("Clear violation");
+        popupMenu.getMenu().add("Delete notification");
         
         popupMenu.setOnMenuItemClickListener(item -> {
-            if (item.getTitle().toString().equals("Clear violation")) {
-                showClearViolationConfirmation(alert);
+            if (item.getTitle().toString().equals("Delete notification")) {
+                showDeleteConfirmation(notification);
                 return true;
             }
             return false;
@@ -390,13 +346,13 @@ public class SmsAlertsActivity extends AppCompatActivity {
         popupMenu.show();
     }
     
-    private void showClearViolationConfirmation(StudentAbsenceAlert alert) {
+    private void showDeleteConfirmation(SmsNotificationHistory notification) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Clear Violation");
-        builder.setMessage("Are you sure you want to clear the violation for " + alert.getFullName() + "? This action cannot be undone.");
+        builder.setTitle("Delete Notification");
+        builder.setMessage("Are you sure you want to delete this SMS notification record? This action cannot be undone.");
         
-        builder.setPositiveButton("Yes, Clear", (dialog, which) -> {
-            clearStudentViolation(alert);
+        builder.setPositiveButton("Yes, Delete", (dialog, which) -> {
+            deleteNotification(notification);
         });
         
         builder.setNegativeButton("Cancel", (dialog, which) -> {
@@ -407,18 +363,51 @@ public class SmsAlertsActivity extends AppCompatActivity {
         dialog.show();
     }
     
-    private void clearStudentViolation(StudentAbsenceAlert alert) {
-        // Remove the alert from the list
-        absenceAlerts.remove(alert);
-        adapter.notifyDataSetChanged();
-        
-        // Show success message
-        Toast.makeText(this, "Violation cleared for " + alert.getFullName(), Toast.LENGTH_SHORT).show();
-        
-        // Check if no more alerts
-        if (absenceAlerts.isEmpty()) {
-            showNoAlertsMessage("No SMS alerts yet", "SMS alerts will appear here when students have 3+ absences");
-        }
+    private void deleteNotification(SmsNotificationHistory notification) {
+        // Remove from Firebase database first
+        mDatabase.child("smsNotifications").child(currentTeacherId)
+                .orderByChild("timestamp").equalTo(notification.getTimestamp())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot notificationSnapshot : snapshot.getChildren()) {
+                                // Delete from Firebase
+                                notificationSnapshot.getRef().removeValue()
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                android.util.Log.d("SmsAlertsActivity", "Notification deleted from database");
+                                                
+                                                // Remove from local list
+                                                notificationHistory.remove(notification);
+                                                adapter.notifyDataSetChanged();
+                                                
+                                                // Show success message
+                                                Toast.makeText(SmsAlertsActivity.this, "Notification deleted", Toast.LENGTH_SHORT).show();
+                                                
+                                                // Check if no more notifications
+                                                if (notificationHistory.isEmpty()) {
+                                                    showNoAlertsMessage("No SMS notifications yet", "SMS notifications will appear here when students reach 3 absences");
+                                                }
+                                            } else {
+                                                android.util.Log.e("SmsAlertsActivity", "Failed to delete notification from database: " + task.getException());
+                                                Toast.makeText(SmsAlertsActivity.this, "Failed to delete notification", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                                break; // Only delete the first match
+                            }
+                        } else {
+                            android.util.Log.e("SmsAlertsActivity", "Notification not found in database");
+                            Toast.makeText(SmsAlertsActivity.this, "Notification not found", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        android.util.Log.e("SmsAlertsActivity", "Database error deleting notification: " + databaseError.getMessage());
+                        Toast.makeText(SmsAlertsActivity.this, "Error deleting notification", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     
 }

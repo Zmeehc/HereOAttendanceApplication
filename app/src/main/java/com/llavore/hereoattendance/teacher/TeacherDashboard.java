@@ -379,123 +379,31 @@ public class TeacherDashboard extends AppCompatActivity {
         // Set default count immediately to avoid blocking
         updateSmsAlertCount(0);
         
-        // Load teacher's courses first
-        DatabaseReference coursesRef = mDatabase.child("users").child("teachers").child(userId).child("courses");
-        coursesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot coursesSnapshot) {
-                if (!coursesSnapshot.exists()) {
-                    updateSmsAlertCount(0);
-                    return;
-                }
-
-                int totalCourses = (int) coursesSnapshot.getChildrenCount();
-                if (totalCourses == 0) {
-                    updateSmsAlertCount(0);
-                    return;
-                }
-
-                // Count students with 3+ absences across all courses
-                countStudentsWithViolations(coursesSnapshot, totalCourses);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                android.util.Log.e("TeacherDashboard", "Failed to load courses for SMS alert count: " + databaseError.getMessage());
-                updateSmsAlertCount(0);
-            }
-        });
-    }
-    
-    private void countStudentsWithViolations(DataSnapshot coursesSnapshot, int totalCourses) {
-        java.util.concurrent.atomic.AtomicInteger coursesProcessed = new java.util.concurrent.atomic.AtomicInteger(0);
-        java.util.Map<String, java.util.Map<String, Integer>> studentAbsenceCounts = new java.util.HashMap<>();
-        
-        for (DataSnapshot courseSnapshot : coursesSnapshot.getChildren()) {
-            com.llavore.hereoattendance.models.Course course = courseSnapshot.getValue(com.llavore.hereoattendance.models.Course.class);
-            if (course == null || course.code == null) continue;
-
-            // Load all sessions for this course
-            mDatabase.child("courses").child(course.code).child("sessions")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot sessionsSnapshot) {
-                            int processed = coursesProcessed.incrementAndGet();
-                            
-                            if (sessionsSnapshot.exists()) {
-                                // Process each session
-                                for (DataSnapshot sessionSnapshot : sessionsSnapshot.getChildren()) {
-                                    DataSnapshot attendanceSnapshot = sessionSnapshot.child("attendance");
-                                    if (attendanceSnapshot.exists()) {
-                                        processSessionForViolations(attendanceSnapshot, course.code, studentAbsenceCounts);
-                                    }
-                                }
-                            }
-
-                            // Check if we've processed all courses
-                            if (processed == totalCourses) {
-                                int violationCount = countStudentsWith3PlusAbsences(studentAbsenceCounts);
-                                updateSmsAlertCount(violationCount);
-                                onLoadingTaskCompleted();
-                            }
+        // Load SMS notification history for this teacher
+        mDatabase.child("smsNotifications").child(userId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        int notificationCount = 0;
+                        
+                        if (snapshot.exists()) {
+                            notificationCount = (int) snapshot.getChildrenCount();
                         }
+                        
+                        android.util.Log.d("TeacherDashboard", "SMS notification count: " + notificationCount);
+                        updateSmsAlertCount(notificationCount);
+                        onLoadingTaskCompleted();
+                    }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                            int processed = coursesProcessed.incrementAndGet();
-                            if (processed == totalCourses) {
-                                int violationCount = countStudentsWith3PlusAbsences(studentAbsenceCounts);
-                                updateSmsAlertCount(violationCount);
-                                onLoadingTaskCompleted();
-                            }
-                        }
-                    });
-        }
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        android.util.Log.e("TeacherDashboard", "Failed to load SMS notifications: " + databaseError.getMessage());
+                        updateSmsAlertCount(0);
+                        onLoadingTaskCompleted();
+                    }
+                });
     }
     
-    private void processSessionForViolations(DataSnapshot attendanceSnapshot, String courseCode, java.util.Map<String, java.util.Map<String, Integer>> studentAbsenceCounts) {
-        // Count absences per student for this course
-        for (DataSnapshot studentSnapshot : attendanceSnapshot.getChildren()) {
-            com.llavore.hereoattendance.models.AttendanceRecord record = studentSnapshot.getValue(com.llavore.hereoattendance.models.AttendanceRecord.class);
-            if (record == null || !"ABSENT".equals(record.getStatus())) {
-                continue; // Only count ABSENT records
-            }
-
-            String edpNumber = record.getEdpNumber();
-            
-            // Initialize maps if needed
-            if (!studentAbsenceCounts.containsKey(edpNumber)) {
-                studentAbsenceCounts.put(edpNumber, new java.util.HashMap<>());
-            }
-            
-            java.util.Map<String, Integer> courseCounts = studentAbsenceCounts.get(edpNumber);
-            int currentCount = courseCounts.getOrDefault(courseCode, 0);
-            courseCounts.put(courseCode, currentCount + 1);
-        }
-    }
-    
-    private int countStudentsWith3PlusAbsences(java.util.Map<String, java.util.Map<String, Integer>> studentAbsenceCounts) {
-        int violationCount = 0;
-        
-        for (java.util.Map.Entry<String, java.util.Map<String, Integer>> studentEntry : studentAbsenceCounts.entrySet()) {
-            java.util.Map<String, Integer> courseCounts = studentEntry.getValue();
-            
-            // Check if student has 3+ absences in any course
-            boolean hasViolation = false;
-            for (java.util.Map.Entry<String, Integer> courseEntry : courseCounts.entrySet()) {
-                if (courseEntry.getValue() >= 3) {
-                    hasViolation = true;
-                    break;
-                }
-            }
-            
-            if (hasViolation) {
-                violationCount++;
-            }
-        }
-        
-        return violationCount;
-    }
     
     private void updateSmsAlertCount(int count) {
         TextView smsAlertCountText = findViewById(R.id.smsAlertCountText);

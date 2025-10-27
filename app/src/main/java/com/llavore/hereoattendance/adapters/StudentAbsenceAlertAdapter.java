@@ -14,31 +14,23 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.llavore.hereoattendance.R;
 import com.llavore.hereoattendance.models.StudentAbsenceAlert;
+import com.llavore.hereoattendance.models.SmsNotificationHistory;
 
 import java.util.List;
 
 public class StudentAbsenceAlertAdapter extends RecyclerView.Adapter<StudentAbsenceAlertAdapter.ViewHolder> {
 
-    private List<StudentAbsenceAlert> absenceAlerts;
+    private List<SmsNotificationHistory> notificationHistory;
     private Context context;
-    private OnSendSmsClickListener onSendSmsClickListener;
     private OnOverflowMenuClickListener onOverflowMenuClickListener;
 
-    public interface OnSendSmsClickListener {
-        void onSendSmsClick(StudentAbsenceAlert alert, ViewHolder holder);
-    }
-
     public interface OnOverflowMenuClickListener {
-        void onOverflowMenuClick(StudentAbsenceAlert alert, View view);
+        void onOverflowMenuClick(SmsNotificationHistory notification, View view);
     }
 
-    public StudentAbsenceAlertAdapter(List<StudentAbsenceAlert> absenceAlerts, Context context) {
-        this.absenceAlerts = absenceAlerts;
+    public StudentAbsenceAlertAdapter(List<SmsNotificationHistory> notificationHistory, Context context) {
+        this.notificationHistory = notificationHistory;
         this.context = context;
-    }
-
-    public void setOnSendSmsClickListener(OnSendSmsClickListener listener) {
-        this.onSendSmsClickListener = listener;
     }
 
     public void setOnOverflowMenuClickListener(OnOverflowMenuClickListener listener) {
@@ -55,66 +47,56 @@ public class StudentAbsenceAlertAdapter extends RecyclerView.Adapter<StudentAbse
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        StudentAbsenceAlert alert = absenceAlerts.get(position);
+        SmsNotificationHistory notification = notificationHistory.get(position);
         
-        // Set student name
-        holder.studentNameText.setText(alert.getFullName());
+        // Set student name (first + last name only)
+        holder.studentNameText.setText(notification.getStudentFullName());
         
-        // Set total absence count
-        holder.absenceCountText.setText("No. of absences: " + alert.getTotalAbsences());
+        // Set absence count to show "3 absents detected"
+        holder.absenceCountText.setText("3 absents detected");
         
         // Clear existing course views
         holder.courseContainer.removeAllViews();
         
-        // Add course information for each course with violations
-        for (StudentAbsenceAlert.CourseAbsence courseAbsence : alert.getCourseAbsences()) {
-            View courseView = LayoutInflater.from(context)
-                    .inflate(R.layout.item_course_absence, holder.courseContainer, false);
-            
-            TextView courseNameText = courseView.findViewById(R.id.courseNameText);
-            TextView courseScheduleText = courseView.findViewById(R.id.courseScheduleText);
-            
-            courseNameText.setText(courseAbsence.getCourseName());
-            courseScheduleText.setText(courseAbsence.getCourseSchedule());
-            
-            holder.courseContainer.addView(courseView);
-        }
+        // Add course information
+        View courseView = LayoutInflater.from(context)
+                .inflate(R.layout.item_course_absence, holder.courseContainer, false);
         
-        // Set click listeners
-        holder.sendSmsButton.setOnClickListener(v -> {
-            if (onSendSmsClickListener != null) {
-                onSendSmsClickListener.onSendSmsClick(alert, holder);
-            }
-        });
+        TextView courseNameText = courseView.findViewById(R.id.courseNameText);
+        TextView courseScheduleText = courseView.findViewById(R.id.courseScheduleText);
         
+        courseNameText.setText(notification.getCourseName());
+        courseScheduleText.setText("Course: " + notification.getCourseCode());
+        
+        holder.courseContainer.addView(courseView);
+        
+        // Set SMS status message
+        holder.smsStatusText.setText("SMS Alert has been sent to parent");
+        
+        // Set overflow menu click listener
         holder.overflowMenu.setOnClickListener(v -> {
             if (onOverflowMenuClickListener != null) {
-                onOverflowMenuClickListener.onOverflowMenuClick(alert, v);
+                onOverflowMenuClickListener.onOverflowMenuClick(notification, v);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return absenceAlerts.size();
+        return notificationHistory.size();
     }
 
-    public void updateData(List<StudentAbsenceAlert> newAlerts) {
-        this.absenceAlerts = newAlerts;
+    public void updateData(List<SmsNotificationHistory> newNotifications) {
+        this.notificationHistory = newNotifications;
         notifyDataSetChanged();
-    }
-    
-    public void setButtonSuccessState(ViewHolder holder) {
-        holder.sendSmsButton.setText("SMS Successfully Sent");
-        holder.sendSmsButton.setBackgroundTintList(context.getResources().getColorStateList(android.R.color.darker_gray));
-        holder.sendSmsButton.setEnabled(false);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView studentNameText;
         TextView absenceCountText;
         LinearLayout courseContainer;
-        MaterialButton sendSmsButton;
+        LinearLayout smsStatusContainer;
+        TextView smsStatusText;
         ImageView overflowMenu;
 
         public ViewHolder(@NonNull View itemView) {
@@ -122,7 +104,8 @@ public class StudentAbsenceAlertAdapter extends RecyclerView.Adapter<StudentAbse
             studentNameText = itemView.findViewById(R.id.studentNameText);
             absenceCountText = itemView.findViewById(R.id.absenceCountText);
             courseContainer = itemView.findViewById(R.id.courseContainer);
-            sendSmsButton = itemView.findViewById(R.id.sendSmsButton);
+            smsStatusContainer = itemView.findViewById(R.id.smsStatusContainer);
+            smsStatusText = itemView.findViewById(R.id.smsStatusText);
             overflowMenu = itemView.findViewById(R.id.overflowMenu);
         }
     }

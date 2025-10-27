@@ -27,6 +27,7 @@ public class StudentNotificationAdapter extends RecyclerView.Adapter<StudentNoti
     public interface OnNotificationClickListener {
         void onNotificationClick(StudentNotification notification);
         void onNotificationExpand(StudentNotification notification, boolean isExpanded);
+        void onOverflowMenuClick(StudentNotification notification, View view);
     }
 
     public StudentNotificationAdapter(List<StudentNotification> notifications, Context context) {
@@ -53,6 +54,7 @@ public class StudentNotificationAdapter extends RecyclerView.Adapter<StudentNoti
         // Set course information
         holder.courseInfoText.setText(notification.getCourseInfo());
         holder.notificationDateText.setText(notification.getFormattedDate());
+        holder.notificationTimeText.setText(notification.getFormattedTime());
         
         // Set alert title and message
         holder.alertTitleText.setText(notification.getTitle());
@@ -76,6 +78,7 @@ public class StudentNotificationAdapter extends RecyclerView.Adapter<StudentNoti
             holder.alertTitleText.setTextColor(context.getResources().getColor(R.color.gray));
             holder.messageText.setTextColor(context.getResources().getColor(R.color.gray));
             holder.truncatedMessageText.setTextColor(context.getResources().getColor(R.color.gray));
+            // Date and time are already gray by default, so no need to change them
         } else {
             // Unread state - full opacity and colors
             holder.itemView.setAlpha(1.0f);
@@ -84,6 +87,7 @@ public class StudentNotificationAdapter extends RecyclerView.Adapter<StudentNoti
             holder.alertTitleText.setTextColor(context.getResources().getColor(R.color.black));
             holder.messageText.setTextColor(context.getResources().getColor(R.color.black));
             holder.truncatedMessageText.setTextColor(context.getResources().getColor(R.color.black));
+            // Date and time remain gray for both read and unread states
         }
         
         // Load teacher profile image
@@ -112,6 +116,13 @@ public class StudentNotificationAdapter extends RecyclerView.Adapter<StudentNoti
                 listener.onNotificationExpand(notification, !isExpanded);
             }
         });
+        
+        // Set overflow menu click listener
+        holder.overflowMenu.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onOverflowMenuClick(notification, v);
+            }
+        });
     }
 
     @Override
@@ -129,11 +140,13 @@ public class StudentNotificationAdapter extends RecyclerView.Adapter<StudentNoti
         ImageView teacherProfileImage;
         TextView courseInfoText;
         TextView notificationDateText;
+        TextView notificationTimeText;
         ImageView alertIcon;
         TextView alertTitleText;
         LinearLayout messageContainer;
         TextView messageText;
         TextView truncatedMessageText;
+        ImageView overflowMenu;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -141,11 +154,13 @@ public class StudentNotificationAdapter extends RecyclerView.Adapter<StudentNoti
             teacherProfileImage = itemView.findViewById(R.id.teacherProfileImage);
             courseInfoText = itemView.findViewById(R.id.courseInfoText);
             notificationDateText = itemView.findViewById(R.id.notificationDateText);
+            notificationTimeText = itemView.findViewById(R.id.notificationTimeText);
             alertIcon = itemView.findViewById(R.id.alertIcon);
             alertTitleText = itemView.findViewById(R.id.alertTitleText);
             messageContainer = itemView.findViewById(R.id.messageContainer);
             messageText = itemView.findViewById(R.id.messageText);
             truncatedMessageText = itemView.findViewById(R.id.truncatedMessageText);
+            overflowMenu = itemView.findViewById(R.id.overflowMenu);
         }
     }
 }

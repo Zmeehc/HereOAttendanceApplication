@@ -108,6 +108,14 @@ public class StudentNotification {
         }
         return "";
     }
+    
+    public String getFormattedTime() {
+        if (dateCreated != null) {
+            java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("h:mm a", java.util.Locale.getDefault());
+            return sdf.format(dateCreated);
+        }
+        return "";
+    }
 
     public String getCourseInfo() {
         return courseName + " | " + courseSchedule;

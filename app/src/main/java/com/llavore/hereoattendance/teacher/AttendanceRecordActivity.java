@@ -348,10 +348,48 @@ public class AttendanceRecordActivity extends AppCompatActivity {
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         android.util.Log.d("AttendanceRecord", "Successfully updated student status to: " + newStatus);
+                        
+                        // If marking as absent, check and increment absence count
+                        if (!isExcused) {
+                            checkAndIncrementAbsenceCount(record.getEdpNumber());
+                        }
+                        
                         // Update the local list and refresh the adapter
                         updateLocalAttendanceRecords();
                     } else {
                         android.util.Log.e("AttendanceRecord", "Failed to update student status: " + task.getException());
+                    }
+                });
+    }
+    
+    private void checkAndIncrementAbsenceCount(String studentEdpNumber) {
+        // Get current teacher ID
+        String teacherId = FirebaseAuth.getInstance().getCurrentUser() != null ? 
+                FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+        
+        if (teacherId == null) {
+            android.util.Log.e("AttendanceRecord", "Teacher ID is null, cannot check absence count");
+            return;
+        }
+        
+        // Get course name for SMS
+        mDatabase.child("courses").child(courseCode).child("name")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot snapshot) {
+                        String courseName = snapshot.getValue(String.class);
+                        if (courseName == null) {
+                            courseName = courseCode; // Fallback to course code
+                        }
+                        
+                        // Call the SMS check method from SmsAlertsActivity
+                        com.llavore.hereoattendance.teacher.SmsAlertsActivity.checkAndIncrementAbsenceCount(
+                                teacherId, studentEdpNumber, courseCode, courseName, AttendanceRecordActivity.this);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                        android.util.Log.e("AttendanceRecord", "Failed to get course name: " + databaseError.getMessage());
                     }
                 });
     }
